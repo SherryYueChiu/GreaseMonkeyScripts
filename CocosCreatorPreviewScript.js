@@ -2,8 +2,9 @@
 // @name            Cocos Creator preview tool
 // @name:ZH-TW      Cocos Creator 預覽小工具
 // @namespace       com.sherryyue.cocoscreatorpreviewtool
-// @version         0.1
-// @description     Cocos Creator 預覽小工具。目前功能：隱藏fatal error，避免影響使用
+// @version         0.2
+// @description       Cocos Creator preview tool.
+// @description:ZH-TW Cocos Creator 預覽小工具。
 // @author          SherryYue
 // @match           http://localhost:7456/
 // @match           http://192.168.31.15:7456/*
@@ -25,18 +26,29 @@
 <style>
 .toolkit {
   position: fixed;
-  right: 0;
-  bottom: 0;
+  right: 2rem;
+  bottom: 2rem;
   z-index: 99999;
 }
 .toolkit .hideError{
   display: none;
   opacity: 0.4;
-  padding: .5rem;     
+  padding: .5rem;
   border: 2px aliceblue solid;
   color: aliceblue;
   background: darkgray;
-  border-radius: .5rem;   
+  border-radius: .5rem;
+}
+#error {
+    background: blue;
+    border-radius: .5rem;
+    max-height: 100vh;
+    padding: 1rem;
+    opacity: 0.75;
+}
+#error .error-main {
+    word-break: break-word;
+    max-height: 70vh;
 }
 </style>
       `;

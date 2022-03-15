@@ -2,7 +2,7 @@
 // @name            Cocos Creator preview tool
 // @name:ZH-TW      Cocos Creator 預覽小工具
 // @namespace       com.sherryyue.cocoscreatorpreviewtool
-// @version         0.2
+// @version         0.3
 // @description       Cocos Creator preview tool.
 // @description:ZH-TW Cocos Creator 預覽小工具。
 // @author          SherryYue
@@ -44,7 +44,8 @@
     border-radius: .5rem;
     max-height: 100vh;
     padding: 1rem;
-    opacity: 0.75;
+    opacity: 0.6;
+    pointer-events: none;
 }
 #error .error-main {
     word-break: break-word;

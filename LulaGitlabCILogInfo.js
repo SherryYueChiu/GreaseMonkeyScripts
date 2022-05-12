@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI log tool
 // @name:ZH-TW      Lula Gitlab CI log 小工具
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.1
+// @version         0.2
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
@@ -33,11 +33,16 @@
       else icon = '✅'
       return ['熱更新', icon];
     } else if (key === 'COMMIT BRANCH') {
-      let isLongString = CI_variables[key].length>11;
+      let isLongString = CI_variables[key].length > 11;
       let marquee = `<marquee scrolldelay="90" scrollamount="2">${CI_variables[key]}</marquee>`;
-      return ['分支', isLongString?marquee:CI_variables[key]];
+      return ['分支', isLongString ? marquee : CI_variables[key]];
     } else if (key === 'COMMIT SHORT SHA') {
       return ['COMMIT SHA', CI_variables[key]];
+    } else if (key === 'BUILD_FAILED') {
+      let icon = '';
+      if (CI_variables[key] === true) icon = '❌'
+      else icon = '✅'
+      return ['任務完成', icon];
     }
   }
 
@@ -140,6 +145,14 @@
         break;
       }
     }
+    // succeeded or failed
+    let lastLine = fullLog[fullLog.length - 1].querySelector('span').innerText;
+    if (lastLine.indexOf('Job failed') != -1) {
+      CI_variables.BUILD_FAILED = true;
+    } else if (lastLine.indexOf('Job succeeded') != -1) {
+      CI_variables.BUILD_FAILED = false;
+    }
+
     injectPanel(document.body);
     $("#yue_console").draggable();
   }

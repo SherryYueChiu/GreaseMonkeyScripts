@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI log tool
 // @name:ZH-TW      Lula Gitlab CI log 小工具
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.2
+// @version         0.3
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
@@ -23,9 +23,10 @@
       return ['環境', CI_variables[key]];
     } else if (key === 'NAMESPACE') {
       let country = '';
-      if (CI_variables[key] == 'thb') country = '泰國';
-      else if (CI_variables[key] == 'default') country = '緬甸';
-      else country = 'CI_variables[key]';
+      if (CI_variables[key] === 'thb') country = '泰國';
+      else if (CI_variables[key] === 'default') country = '緬甸';
+      else if (CI_variables[key] === 'php') country = '菲律賓';
+      else country = CI_variables[key];
       return ['市場', country];
     } else if (key === 'NO_HOTUPDATE') {
       let icon = '';
@@ -43,6 +44,8 @@
       if (CI_variables[key] === true) icon = '❌'
       else icon = '✅'
       return ['任務完成', icon];
+    } else {
+      return [null, null];
     }
   }
 
@@ -105,6 +108,7 @@
       $line.className = 'line';
 
       let [_key, _val] = translateCIVariable(key);
+      if (_key === null) continue;
       let $key = document.createElement("div");
       $key.className = 'key';
       $key.innerText = _key;

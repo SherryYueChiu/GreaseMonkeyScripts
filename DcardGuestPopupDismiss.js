@@ -2,7 +2,7 @@
 // @name            Dcard guest popup dismiss
 // @name:ZH-TW      Dcard 訪客瀏覽腳本
 // @namespace       com.sherryyue.dcardguestmode
-// @version         0.3
+// @version         0.4
 // @description     Dismiss the annoying login request pop-up and unlock scrolling restriction while not logging in.
 // @author          SherryYue
 // @match           *://*.dcard.tw/*
@@ -18,14 +18,6 @@
    * @type HTMLElement */
   var $loginRequestPopup;
 
-  /** if popup exsist, dismiss it. */
-  var loginPopupTraker = () => {
-    $loginRequestPopup = document.querySelector(".__portal>*");
-    if ($loginRequestPopup) {
-      breakRestriction();
-    }
-  }
-
   /** dismiss the popup and break the scrolling restriction */
   var breakRestriction = () => {
     // hide login reqquest popup
@@ -34,6 +26,13 @@
     document.body.style.overflow = "auto";
   }
 
-  // detect every 0.5 seconds
-  setInterval(loginPopupTraker, 500);
+  let observer = new MutationObserver((mutations, obs) => {
+    $loginRequestPopup = document.querySelector(".__portal>*");
+    if ($loginRequestPopup) breakRestriction();
+  });
+
+  observer.observe(document.querySelector(".__portal"), {
+    childList: true,
+    subtree: true
+  });
 })();

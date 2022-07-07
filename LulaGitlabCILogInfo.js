@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI log tool
 // @name:ZH-TW      Lula Gitlab CI log 小工具
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.3
+// @version         0.4
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
@@ -161,7 +161,16 @@
     $("#yue_console").draggable();
   }
 
-  setTimeout(main, 500);
+  let observer = new MutationObserver((mutations, obs) => {
+    if (!document.querySelector(".build-trace-container>code .js-line.log-line")) return;
+    main();
+    observer.disconnect();
+  });
+
+  observer.observe(document.querySelector("body"), {
+    childList: true,
+    subtree: true
+  });
 
   document.getElementsByTagName('head')[0].append(
     '<link '

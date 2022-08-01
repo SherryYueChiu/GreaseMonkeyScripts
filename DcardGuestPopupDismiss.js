@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name            Dcard guest popup dismiss
-// @name:ZH-TW      Dcard 訪客瀏覽腳本
+// @name:zh-TW      Dcard 訪客瀏覽腳本
 // @namespace       com.sherryyue.dcardguestmode
-// @version         0.4
+// @version         0.5
 // @description     Dismiss the annoying login request pop-up and unlock scrolling restriction while not logging in.
 // @author          SherryYue
 // @match           *://*.dcard.tw/*

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name            Yout.com unlock paid features
-// @name:ZH-TW      Yout.com解鎖付費功能
+// @name:zh-TW      Yout.com解鎖付費功能
 // @namespace       com.sherryyue.youcomunlock
-// @version         0.1
+// @version         0.2
 // @description     解鎖僅付費會員可用的720p和1080解析度
 // @author          SherryYue
 // @match           *://yout.com/video/*

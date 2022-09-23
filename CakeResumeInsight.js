@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name            View all visitor on CakeResume insight page
 // @name:zh-tw      CakeResume誰造訪了我的個人檔案
-// @namespace       com.sherryyue.cakeresumeinsight
+// @namespace       com.sherryyue.cakeresumeunlock
 // @version         0.1
-// @description     view all vistors without paid function on https://www.cakeresume.com/dashboard/insights
-// @description:zh-tw 在誰造訪了我的個人檔案的頁面中，不需付費就能看見所有的訪客
+// @description     Unlock part of premium functions on https://www.cakeresume.com/. Including view all visitors and messages form them
+// @description:zh-tw 解鎖部分高級功能：看見所有的訪客、查看未建立聯繫的公司傳來的完整訊息
 // @author          SherryYue
 // @match           *://*.cakeresume.com/*
 // @contributionURL https://sherryyuechiu.github.io/card
@@ -15,22 +15,35 @@
 
 (function () {
   'use strict';
-
+  // insight page
   const class1 = 'c-viewer-card-blur';
   const class2 = 'l-viewer-card-mask';
+  // messages page & message popup
+  const class3 = 'chat-connect-container';
 
-  const removeBlursAndMasks = () => {
-    document.querySelectorAll('.' + class1).forEach(elm => {
-      elm.classList.remove(class1);
-    });
-    document.querySelectorAll('.' + class2).forEach(elm => {
-      elm.classList.remove(class2);
-    });
-  }
-  // main
-  setTimeout(() => {
-    if (document.querySelector('.' + class1)) {
-      removeBlursAndMasks();
+  let errorBlockObserver = new MutationObserver((mutations, obs) => {
+    const elm1 = document.querySelector(`.${class1}`);
+    if (elm1) {
+      document.querySelectorAll('.' + class1).forEach(elm => {
+        elm.classList.remove(class1);
+      });
     }
-  }, 1500);
+    const elm2 = document.querySelector(`.${class2}`);
+    if (elm2) {
+      document.querySelectorAll('.' + class2).forEach(elm => {
+        elm.classList.remove(class2);
+      });
+    }
+    const elm3 = document.querySelector(`.${class3}`);
+    if (elm3) {
+      document.querySelectorAll('.' + class3).forEach(elm => {
+        elm.classList.remove(class3);
+      });
+    }
+  });
+
+  errorBlockObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 })();

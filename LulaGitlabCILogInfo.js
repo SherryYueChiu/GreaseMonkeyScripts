@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI log tool
 // @name:zh-TW      Lula Gitlab CI log 小工具
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.5
+// @version         0.6
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
@@ -20,13 +20,22 @@
 
   function translateCIVariable(key) {
     if (key === 'DEPLOY') {
-      return ['環境', CI_variables[key]];
+      let env = '';
+      if (CI_variables[key].startsWith('PROD')) env = '正式站';
+      else if (CI_variables[key].startsWith('RTM')) env = 'RTM';
+      else if (CI_variables[key] === 'QA') env = '測試站';
+      else if (CI_variables[key] === 'RD') env = '開發站';
+      else env = CI_variables[key];
+      return ['環境', env];
     } else if (key === 'NAMESPACE') {
       let country = '';
-      if (CI_variables[key] === 'thb') country = '泰國';
-      else if (CI_variables[key] === 'default') country = '緬甸';
-      else if (CI_variables[key] === 'php') country = '菲律賓';
-      else country = CI_variables[key];
+      if (CI_variables[key].endsWith('thb')) country = '泰國';
+      else if (CI_variables[key].endsWith('php')) country = '菲律賓';
+
+      if (CI_variables['DEPLOY'].endsWith('TH')) country = '泰國';
+      else if (CI_variables['DEPLOY'].endsWith('PHP')) country = '菲律賓';
+
+      if (!country) country = '緬甸';
       return ['市場', country];
     } else if (key === 'NO_HOTUPDATE') {
       let icon = '';

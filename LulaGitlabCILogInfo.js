@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI log tool
 // @name:zh-TW      Lula Gitlab CI log 小工具
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.6
+// @version         0.7
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
@@ -17,6 +17,7 @@
 (function () {
   var variableStartLine = 0, variableEndLine = 0;
   var CI_variables = {};
+  var isRaw = false;
 
   function translateCIVariable(key) {
     if (key === 'DEPLOY') {
@@ -135,19 +136,37 @@
   }
 
   function main() {
-    if (!document.querySelector('.build-trace-container>code')) return;
+    if (
+      !document.querySelector('.build-trace-container>code') &&
+      !document.querySelector('body>pre')
+    ) return;
     // find whoami and variables below
-    let fullLog = document.querySelectorAll('.build-trace-container>code .js-line.log-line');
+    let fullLog;
+    if (isRaw === true) {
+      fullLog = document.querySelector('body>pre').innerHTML.split('\n');
+    } else {
+      fullLog = document.querySelectorAll('.build-trace-container>code .js-line.log-line');
+    }
     for (let i = 0; i < fullLog.length; i++) {
-      let lineTxt = fullLog[i].querySelector('span').innerText;
-      if (lineTxt.indexOf('$ whoami') === 0) {
+      let lineTxt;
+      if (isRaw === true) {
+        lineTxt = fullLog[i];
+      } else {
+        lineTxt = fullLog[i].querySelector('span').innerText
+      }
+      if (lineTxt.indexOf('whoami') != -1) {
         variableStartLine = i + 2;
         break;
       }
     }
     // parse
     for (let i = variableStartLine; i < fullLog.length; i++) {
-      let lineTxt = fullLog[i].querySelector('span').innerText;
+      let lineTxt;
+      if (isRaw === true) {
+        lineTxt = fullLog[i];
+      } else {
+        lineTxt = fullLog[i].querySelector('span').innerText;
+      }
       let lineAnaylze = lineTxt.match(/(.+)\: (.*)/);
       if (lineAnaylze != null) {
         let key = lineAnaylze[1];
@@ -159,7 +178,12 @@
       }
     }
     // succeeded or failed
-    let lastLine = fullLog[fullLog.length - 1].querySelector('span').innerText;
+    let lastLine;
+    if (isRaw === true) {
+      lastLine = fullLog[fullLog.length - 1];
+    } else {
+      lastLine = fullLog[fullLog.length - 1].querySelector('span').innerText;
+    }
     if (lastLine.indexOf('Job failed') != -1) {
       CI_variables.BUILD_FAILED = true;
     } else if (lastLine.indexOf('Job succeeded') != -1) {
@@ -181,10 +205,14 @@
     subtree: true
   });
 
+  if (window.location.href.endsWith('/raw')) {
+    isRaw = true;
+    main();
+  }
+
   document.getElementsByTagName('head')[0].append(
     '<link '
     + 'href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css" '
     + ' type="text/css">'
   );
-
 })();

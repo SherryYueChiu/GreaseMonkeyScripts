@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI log tool
 // @name:zh-TW      Lula Gitlab CI log 小工具
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.8
+// @version         0.9
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
@@ -134,7 +134,7 @@
       }, 10);
     }
     // log過多，此頁未載明，需要開啟raw log
-    if (Object.keys(CI_variables).length <= 2) {
+    if (Object.keys(CI_variables).length === 1 || Object.keys(CI_variables).length === 2) {
       let $line = document.createElement("div");
       $line.className = 'line';
       let $key = document.createElement("div");

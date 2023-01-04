@@ -2,7 +2,7 @@
 // @name            View all visitor on CakeResume insight page
 // @name:zh-tw      CakeResume誰造訪了我的個人檔案
 // @namespace       com.sherryyue.cakeresumeunlock
-// @version         0.1
+// @version         0.3
 // @description     Unlock part of premium functions on https://www.cakeresume.com/. Including view all visitors and messages form them
 // @description:zh-tw 解鎖部分高級功能：看見所有的訪客、查看未建立聯繫的公司傳來的完整訊息
 // @author          SherryYue
@@ -18,6 +18,7 @@
   // insight page
   const class1 = 'c-viewer-card-blur';
   const class2 = 'l-viewer-card-mask';
+  const class4 = "[class*='MessageChannelViewer_acceptance_']";
   // messages page & message popup
   const class3 = 'chat-connect-container';
 
@@ -39,6 +40,10 @@
       document.querySelectorAll('.' + class3).forEach(elm => {
         elm.classList.remove(class3);
       });
+    }
+    const elm4 = document.querySelector(class4);
+    if (elm4) {
+      elm4.style.setProperty('background','none','important');
     }
   });
 

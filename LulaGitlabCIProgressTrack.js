@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI progress track tool
 // @name:zh-TW      Lula Gitlab CI 進度追蹤工具
 // @namespace       com.sherryyue.lulagitlabciprogresstrack
-// @version         0.1
+// @version         0.2
 // @description       Lula Gitlab CI progress track
 // @description:ZH-TW Lula Gitlab CI 進度追蹤
 // @author          SherryYue
@@ -18,6 +18,8 @@
   const TGToken = '6029836287:AAGtY81VFypCB976DwfRG7hZ033oEHzBT1Y';
   const chatId = 901947307;
   let pipelineState = [];
+  let pipelineEverUpdate = [];
+  let prevUndoneAmount = -1, prevSuccessAmount = -1, prevFailedAmount = -1;
 
   PIPELINE_STATE = {
     PENDING: 'pending',
@@ -40,6 +42,10 @@
     if (classList.contains('ci-waiting-for-resource')) return PIPELINE_STATE.WAITING_RESOURCES;
   }
 
+  function getPipeLineId(elm) {
+    return elm.querySelector('.pipeline-tags [data-qa-selector="pipeline_url_link"]').innerText.trim();
+  }
+
   function sendNotification(msg) {
     const searchParams = new URLSearchParams({
       chat_id: chatId,
@@ -59,10 +65,11 @@
 
   function main() {
     const pipelines = document.querySelectorAll('.commit[data-testid=pipeline-table-row]');
-    if (pipelineState.length === 0) {
+    if (Object.keys(pipelineState).length === 0) {
       pipelines.forEach((pipeline, i) => {
         const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
-        pipelineState[i] = judgeState(statusTd);
+        pipelineState[getPipeLineId(pipeline)] = judgeState(statusTd);
+        pipelineEverUpdate[getPipeLineId(pipelines[i])] = false;
       });
       return;
     }
@@ -72,7 +79,12 @@
       if (!isHTMLElement(pipelines[i])) continue;
       const statusTd = pipelines[i].querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
       if (statusTd) {
-        if (pipelineState[i] === judgeState(statusTd)) continue;
+        // 狀態沒變
+        if (pipelineState[getPipeLineId(pipelines[i])] === judgeState(statusTd)) {
+          continue;
+        }
+        console.log('changed', getPipeLineId(pipelines[i]), pipelineState[getPipeLineId(pipelines[i])], judgeState(statusTd))
+        // 狀態有變
         diffPipelines.push(pipelines[i]);
       }
     }
@@ -81,30 +93,58 @@
     let successAmount = 0;
     let failedAmount = 0;
     let undoneAmount = 0;
-    for (let i = 0; i < diffPipelines.length; i++) {
-      const pipeline = diffPipelines[i];
+    for (let i = 0; i < pipelines.length; i++) {
+      const pipeline = pipelines[i];
       const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
       if (statusTd) {
         state = judgeState(statusTd);
-        if (state === PIPELINE_STATE.SUCCESS || state === PIPELINE_STATE.PARTIAL_SUCCESS) successAmount++;
-        else if (state === PIPELINE_STATE.FAILED || state === PIPELINE_STATE.PARTIAL_FAILED) failedAmount++;
-        else undoneAmount++;
+        if (
+          (state === PIPELINE_STATE.SUCCESS || state === PIPELINE_STATE.PARTIAL_SUCCESS) &&
+          pipelineEverUpdate[getPipeLineId(pipelines[i])] === true &&
+          pipelineState[getPipeLineId(pipelines[i])] !== judgeState(statusTd)
+        ) successAmount++;
+        else if (
+          (state === PIPELINE_STATE.FAILED || state === PIPELINE_STATE.PARTIAL_FAILED) &&
+          pipelineEverUpdate[getPipeLineId(pipelines[i])] === true &&
+          pipelineState[getPipeLineId(pipelines[i])] !== judgeState(statusTd)
+        ) failedAmount++;
+        else if (
+          (state === PIPELINE_STATE.RUNNING || state === PIPELINE_STATE.PENDING || state === PIPELINE_STATE.WAITING_RESOURCES)
+        ) undoneAmount++;
       }
     }
 
-    const LINE_BREAK = '\%0A';
-    const projectName = document.head.querySelector('title').text.split(' · ')?.[1];
-    let message = `CICD狀態更新：${projectName}`;
-    if (successAmount > 0) message += LINE_BREAK + `${successAmount}項成功`;
-    if (failedAmount > 0) message += LINE_BREAK + `${failedAmount}項失敗`;
-    if (undoneAmount > 0) message += LINE_BREAK + `還有${undoneAmount}項未完成`;
-    console.warn('message', message)
-    sendNotification(message);
+    if (
+      prevUndoneAmount !== undoneAmount ||
+      prevSuccessAmount !== successAmount ||
+      prevFailedAmount !== failedAmount
+    ) {
+      const LINE_BREAK = '\%0A';
+      const projectName = document.head.querySelector('title').text.split(' · ')?.[1];
+      let message = `CICD狀態更新：${projectName}`;
+      if (undoneAmount > 0) message += LINE_BREAK + `還有${undoneAmount}項未完成`;
+      else {
+        if (failedAmount > 0) {
+          message += LINE_BREAK + `全數完成，但有${failedAmount}項失敗`;
+        } else {
+          message += LINE_BREAK + `全數完成`;
+        }
+      }
+      console.log('sent message: ', message);
+      sendNotification(message);
+
+      prevUndoneAmount = failedAmount;
+      prevSuccessAmount = successAmount;
+      prevFailedAmount = failedAmount;
+    }
 
     // 更新狀態記錄
     pipelines.forEach((pipeline, i) => {
       statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
-      pipelineState[i] = judgeState(statusTd);
+      if (pipelineState[getPipeLineId(pipelines[i])] !== judgeState(statusTd)) {
+        pipelineState[getPipeLineId(pipelines[i])] = judgeState(statusTd);
+        pipelineEverUpdate[getPipeLineId(pipelines[i])] = true;
+      }
     });
     console.log('state of pipelines', pipelineState);
   }

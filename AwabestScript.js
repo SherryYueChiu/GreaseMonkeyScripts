@@ -6,10 +6,13 @@
 // @description     	Auto finish daily sign-in mission at awabest.com.
 // @description:zh-TW	自動完成Awabest.com每日簽到
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           *://awabest.com/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
+// @supportURL 			"https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage 				"https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           none
 // ==/UserScript==
 

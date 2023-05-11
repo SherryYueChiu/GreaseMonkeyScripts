@@ -6,11 +6,14 @@
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           http://gitlab.lulainno.com/RedRuby/AngPao/*
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
 // @require         https://code.jquery.com/jquery-3.6.0.js
 // @require         https://code.jquery.com/ui/1.13.1/jquery-ui.js
+// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           GM_addStyle
 // ==/UserScript==
 

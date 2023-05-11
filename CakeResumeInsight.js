@@ -6,10 +6,13 @@
 // @description     Unlock part of premium functions on https://www.cakeresume.com/. Including view all visitors and messages form them
 // @description:zh-tw 解鎖部分高級功能：看見所有的訪客、查看未建立聯繫的公司傳來的完整訊息
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           *://*.cakeresume.com/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
+// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           none
 // ==/UserScript==
 

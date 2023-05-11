@@ -6,10 +6,13 @@
 // @description     	Auto finish daily sign-in mission： 每日搖搖樂、兔兔採蘑菇、城市PK
 // @description:zh-TW	自動簽到：每日搖搖樂、兔兔採蘑菇、城市PK
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           *://trnt.lgbt/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
+// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           GM_setValue
 // @grant           GM_getValue
 // ==/UserScript==

@@ -6,12 +6,15 @@
 // @description       Cocos Creator preview tool.
 // @description:ZH-TW Cocos Creator 預覽小工具。
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           http://localhost:7456/
 // @match           http://192.168.31.15:7456/*
 // @match           https://*.rrbgaming66.com/
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
+// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           none
 // ==/UserScript==
 

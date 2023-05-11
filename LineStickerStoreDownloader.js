@@ -4,13 +4,16 @@
 // @namespace       com.sherryyue.linestickerstoredownloader
 // @version         0.1
 // @description       Line Store Sticker Downloader.
-// @description:ZH-TW Line Store 貼圖下載器。
+// @description:ZH-TW Line Store 貼圖下載器
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           https://store.line.me/*
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
 // @require         https://code.jquery.com/jquery-3.6.0.js
 // @require         https://code.jquery.com/ui/1.13.1/jquery-ui.js
+// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           GM_addStyle
 // ==/UserScript==
 

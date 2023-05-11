@@ -5,10 +5,13 @@
 // @version         0.2
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           *://suggest.police.taichung.gov.tw/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
+// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           none
 // ==/UserScript==
 

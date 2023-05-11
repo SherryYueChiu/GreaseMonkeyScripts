@@ -6,10 +6,13 @@
 // @description     東海課程資訊網資料爬蟲
 // @description:zh-tw 東海課程資訊網資料爬蟲
 // @author          SherryYue
+// @copyright       SherryYue
 // @match           *://course.thu.edu.tw/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
+// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
+// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           none
 // ==/UserScript==
 

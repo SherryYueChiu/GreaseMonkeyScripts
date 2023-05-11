@@ -7,6 +7,7 @@
 // @description:ZH-TW Lula Gitlab CI 進度追蹤
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           http://gitlab.lulainno.com/*
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png

@@ -7,6 +7,7 @@
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           http://gitlab.lulainno.com/RedRuby/AngPao/*
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png

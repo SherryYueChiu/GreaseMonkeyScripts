@@ -7,6 +7,7 @@
 // @description:zh-TW	自動簽到：每日搖搖樂、兔兔採蘑菇、城市PK
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           *://trnt.lgbt/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com

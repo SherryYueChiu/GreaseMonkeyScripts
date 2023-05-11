@@ -6,6 +6,7 @@
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           *://suggest.police.taichung.gov.tw/*
 // @match           *://jiaowei.ncpb.gov.tw/sc11/*
 // @contributionURL https://sherryyuechiu.github.io/card

@@ -7,6 +7,7 @@
 // @description:zh-tw 東海課程資訊網資料爬蟲
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           *://course.thu.edu.tw/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com

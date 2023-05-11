@@ -7,6 +7,7 @@
 // @description:zh-TW	自動完成Awabest.com每日簽到
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           *://awabest.com/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com

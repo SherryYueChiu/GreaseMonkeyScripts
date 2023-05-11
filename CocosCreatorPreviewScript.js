@@ -7,6 +7,7 @@
 // @description:ZH-TW Cocos Creator 預覽小工具。
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           http://localhost:7456/
 // @match           http://192.168.31.15:7456/*
 // @match           https://*.rrbgaming66.com/

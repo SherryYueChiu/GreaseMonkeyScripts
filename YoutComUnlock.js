@@ -6,6 +6,7 @@
 // @description     解鎖僅付費會員可用的720p和1080解析度
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           *://yout.com/video/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com

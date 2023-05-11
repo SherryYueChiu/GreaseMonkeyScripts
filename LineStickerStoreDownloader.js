@@ -7,6 +7,7 @@
 // @description:ZH-TW Line Store 貼圖下載器
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           https://store.line.me/*
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png

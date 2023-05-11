@@ -6,6 +6,7 @@
 // @description     Dismiss the annoying login request pop-up and unlock scrolling restriction while not logging in.
 // @author          SherryYue
 // @copyright       SherryYue
+// @license         MIT
 // @match           *://*.dcard.tw/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com

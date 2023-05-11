@@ -2,7 +2,7 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.1
+// @version         0.2
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @match           *://suggest.police.taichung.gov.tw/*
@@ -39,7 +39,9 @@
   feild.addr = document.querySelector('#address');
   feild.tel = document.querySelector('#liaisontel');
   feild.mail = document.querySelector('#email');
+  feild.actSelect = document.querySelector('#qclass')
   feild.dateTime = document.querySelector('#violationdatetime');
+  feild.detail = document.querySelector('#detailcontent')
 
   const urlPathName = location.pathname;
   if (urlPathName === '/traffic/' || urlPathName === '/traffic/index.jsp') {
@@ -56,6 +58,10 @@
     feild.tel.value = profile.tel;
     feild.mail.value = profile.mail;
     feild.dateTime.removeAttribute('readonly');
+    // 依下拉選單自動填入描述
+    feild.actSelect.onchange = () => {
+      feild.detail.value = feild.actSelect.value.replace(/^道交[\d-、之第項]+/gi, '');
+    }
   }
 
 })();

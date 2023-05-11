@@ -2,7 +2,7 @@
 // @name            Trnt.lgbt game script
 // @name:zh-TW      不明小站遊戲腳本
 // @namespace       com.sherryyue.trntLgbtScript
-// @version         0.2
+// @version         0.3
 // @description     	Auto finish daily sign-in mission： 每日搖搖樂、兔兔採蘑菇、城市PK
 // @description:zh-TW	自動簽到：每日搖搖樂、兔兔採蘑菇、城市PK
 // @author          SherryYue

@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI log tool
 // @name:zh-TW      Lula Gitlab CI log 小工具
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.9
+// @version         0.10
 // @description       Lula Gitlab CI log info
 // @description:ZH-TW Lula Gitlab CI log 基本資訊顯示
 // @author          SherryYue

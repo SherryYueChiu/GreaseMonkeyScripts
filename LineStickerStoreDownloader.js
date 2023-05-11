@@ -2,9 +2,9 @@
 // @name            Line Store Sticker Downloader
 // @name:zh-TW      Line Store 貼圖下載器
 // @namespace       com.sherryyue.linestickerstoredownloader
-// @version         0.1
+// @version         0.4
 // @description       Line Store Sticker Downloader.
-// @description:ZH-TW Line Store 貼圖下載器
+// @description:ZH-TW Line Store 貼圖下載器。
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
@@ -29,23 +29,26 @@
   }
 
   let main = () => {
-    $('.FnStickerPreviewItem').click(function(){
+    $('.FnStickerPreviewItem').on("click", function () {
       let data = JSON.parse($(this).attr('data-preview'));
       let clearImageUrl = data.fallbackStaticUrl;
       downloadImage(clearImageUrl);
-    })
+      console.warn('data', data)
+    });
   }
 
-  let observer = new MutationObserver((mutations, obs) => {
+  function observerFallBack(mutations, obs) {
     if (!document.querySelector(".FnStickerPreviewItem")) return;
-    main();
+    setTimeout(main, 250);
     observer.disconnect();
-  });
+  }
 
+  let observer = new MutationObserver(observerFallBack);
   observer.observe(document.querySelector("body"), {
     childList: true,
     subtree: true
   });
+  setTimeout(observerFallBack, 250);
 
   document.getElementsByTagName('head')[0].append(
     '<link '
@@ -53,3 +56,4 @@
     + ' type="text/css">'
   );
 })();
+

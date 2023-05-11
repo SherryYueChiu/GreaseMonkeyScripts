@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI progress track tool
 // @name:zh-TW      Lula Gitlab CI 進度追蹤工具
 // @namespace       com.sherryyue.lulagitlabciprogresstrack
-// @version         0.2
+// @version         0.3
 // @description       Lula Gitlab CI progress track
 // @description:ZH-TW Lula Gitlab CI 進度追蹤
 // @author          SherryYue

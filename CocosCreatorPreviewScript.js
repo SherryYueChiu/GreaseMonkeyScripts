@@ -2,7 +2,7 @@
 // @name            Cocos Creator preview tool
 // @name:zh-TW      Cocos Creator 預覽小工具
 // @namespace       com.sherryyue.cocoscreatorpreviewtool
-// @version         0.4
+// @version         0.5
 // @description       Cocos Creator preview tool.
 // @description:ZH-TW Cocos Creator 預覽小工具。
 // @author          SherryYue

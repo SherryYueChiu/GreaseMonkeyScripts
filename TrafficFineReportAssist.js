@@ -2,7 +2,7 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.3
+// @version         0.4
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
@@ -25,11 +25,17 @@
     FEMALE: 2,
   }
   const profile = {
+    /** 全名 */
     fullName: '',
+    /** 性別 GENDER.MALE 或 GENDER.FEMALE */
     gender: GENDER.FEMALE,
+    /** 身分證字號 */
     id: '',
+    /** 你的聯絡地址 */
     addr: '',
+    /** 家用電話或手機號碼 */
     tel: '',
+    /** 電子信箱 */
     mail: '',
   }
 

@@ -2,7 +2,7 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.4
+// @version         0.5
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
@@ -49,6 +49,7 @@
       field.disclaimerRead.click();
       field.disclaimerRead.click();
       field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
     } else if (urlPathName === '/traffic/traffic_write.jsp') {
       field.fullName = document.querySelector('#name');
       field.genderMale = document.querySelector('#male');

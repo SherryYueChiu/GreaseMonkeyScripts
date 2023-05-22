@@ -2,7 +2,7 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.5
+// @version         0.6
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
@@ -62,7 +62,7 @@
       field.actSelect = document.querySelector('#qclass');
       field.dateTime = document.querySelector('#violationdatetime');
       field.detail = document.querySelector('#detailcontent');
-      
+
       field.fullName.value = profile.fullName;
       if (profile.gender === GENDER.FEMALE) field.genderFemale.click();
       else if (profile.gender === GENDER.MALE) field.genderMale.click();
@@ -76,6 +76,20 @@
       field.actSelect.onchange = () => {
         field.detail.value = field.actSelect.value.replace(/^道交[\d-、之第項]+/gi, '');
       }
+      // 客製化車牌輸入，可以直接輸入整串
+      document.querySelectorAll('#license1>*').forEach(elm => elm.style?.setProperty('display', 'none'));
+      const customLicenseInput = document.createElement('input');
+      customLicenseInput.setAttribute('placeholder', '完整車牌，包含-');
+      customLicenseInput.style.setProperty('display', 'block');
+      customLicenseInput.style.setProperty('width', 'calc(80% - 7px)');
+      document.querySelector('#license1').insertBefore(customLicenseInput, document.querySelector('#license1 label'));
+      customLicenseInput.oninput = (() => {
+        const licenseInputL = document.querySelector('#licensenumber2');
+        const licenseInputR = document.querySelector('#licensenumber3');
+        const [licenseNumL, licenseNumR] = customLicenseInput.value.split('-');
+        licenseInputL.value = licenseNumL || '';
+        licenseInputR.value = licenseNumR || '';
+      });
     }
   }
 

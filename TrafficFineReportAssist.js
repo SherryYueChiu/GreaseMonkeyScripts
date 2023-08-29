@@ -2,18 +2,27 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.6
+// @version         0.10
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
+// @match           *://tvrs.ntpd.gov.tw/*
+// @match           *://prsweb.tcpd.gov.tw/*
+// @match           *://tvrweb.typd.gov.tw:3444/*
+// @match           *://traffic.hchpb.gov.tw/*
+// @match           *://trv.mpb.gov.tw/*
 // @match           *://suggest.police.taichung.gov.tw/*
 // @match           *://jiaowei.ncpb.gov.tw/sc11/*
+// @match           *://www.thb.gov.tw/*
+// @match           *://traffic.chpb.gov.tw/*
+// @match           *://trv.ylhpb.gov.tw/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
 // @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
 // @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
+// @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @grant           none
 // ==/UserScript==
 
@@ -39,6 +48,115 @@
     mail: '',
   }
 
+  function xinBei() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/Home/Report') {
+      field.disclaimerRead = document.querySelector('#ck');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName === '/Home/Report_Add') {
+      field.fullName = document.querySelector('#informerData_informer_name');
+      field.id = document.querySelector('#informerData_identity');
+      field.tel = document.querySelector('#informerData_Phone');
+      field.addr = document.querySelector('#informerData_contact_address');
+      field.mail = document.querySelector('#informerData_Email');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function taiBei() {
+    let field = {};
+
+    const urlPathName = location.hash;
+    if (urlPathName === '#/') {
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName === '#/New') {
+      field.fullName = document.querySelector('#sPub_nm');
+      field.id = document.querySelector('#sPub_id');
+      field.tel = document.querySelector('#sPubtel');
+      field.addr = document.querySelector('#sPubadd');
+      field.mail = document.querySelector('#email');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function taoYuan() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/report') {
+      field.fullName = document.querySelector('#txtName');
+      field.id = document.querySelector('#txtId');
+      field.tel = document.querySelector('#txtNum');
+      field.addr = document.querySelector('#txtAdd');
+      field.mail = document.querySelector('#txtEmaill');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function xinZhu() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/10/13') {
+      field.disclaimerRead = document.querySelector('.agree>input');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName === '/report') {
+      field.fullName = document.querySelector('#name');
+      field.id = document.querySelector('#idcard');
+      field.tel = document.querySelector('#tel');
+      field.addr = document.querySelector('#address2');
+      field.mail = document.querySelector('#email');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function miaoLi() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/Home/Report') {
+      field.fullName = document.querySelector('#Name');
+      field.id = document.querySelector('#IdentityNumber');
+      field.tel = document.querySelector('#Telphone');
+      field.addr = document.querySelector('#Address');
+      field.mail = document.querySelector('#Email');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
   function taichung() {
     let field = {};
 
@@ -51,6 +169,12 @@
       field.disclaimerRead.checked = true;
       window.scrollTo(0, document.body.scrollHeight);
     } else if (urlPathName === '/traffic/traffic_write.jsp') {
+      const timepickerUnlock = () => {
+        field.timepicker = document.querySelector('.ui_tpicker_time_input');
+        field.timepicker.removeAttribute('disabled');
+      }
+      waitForKeyElements(".ui_tpicker_time_input", timepickerUnlock);
+
       field.fullName = document.querySelector('#name');
       field.genderMale = document.querySelector('#male');
       field.genderFemale = document.querySelector('#female');
@@ -126,9 +250,106 @@
     }
   }
 
-  if (location.host === 'suggest.police.taichung.gov.tw') {
+  function zhanghua() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/ViolatePetition/C005400') {
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName === '/ViolatePetition/C005400/Form') {
+      field.fullName = document.querySelector('#Name');
+      field.id = document.querySelector('#IdentityCard');
+      field.tel = document.querySelector('#OfficeTel');
+      field.addr = document.querySelector('#Address');
+      field.mail = document.querySelector('#Mail');
+      field.date = document.querySelector('#ViolationDate');
+      field.time = document.querySelector('#ViolationTime');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+      field.date.setAttribute('type', 'text');
+      field.date.setAttribute('placeholder', 'YYYY-mm-dd');
+      field.time.setAttribute('type', 'text');
+      field.time.setAttribute('placeholder', 'HH:mm');
+    }
+  }
+
+  function gongluZongJu() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/Message_CarViolation.aspx') {
+      field.mail = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtMail');
+      field.fullName = document.querySelector('#ContentPlaceHolder1_c_29');
+      field.id = document.querySelector('#ContentPlaceHolder1_c_30');
+      field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
+      const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode');
+
+      field.mail.value = profile.mail;
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+
+      const verifyCode = localStorage.getItem('verifyCode')
+      if (verifyCode) verifyCodeInput.value = verifyCode;
+      verifyCodeInput.addEventListener('change', () => {
+        localStorage.setItem('verifyCode', verifyCodeInput.value);
+      });
+    }
+  }
+
+  function yunLin() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/Home/Report') {
+      field.fullName = document.querySelector('#Name');
+      field.id = document.querySelector('#IdentityNumber');
+      field.tel = document.querySelector('#Telphone');
+      field.addr = document.querySelector('#Address');
+      field.mail = document.querySelector('#Email');
+      field.date = document.querySelector('[name=SetDateOfOccurrence]');
+      field.time = document.querySelector('[name=SetTimeOfOccurrence');
+      
+      field.disclaimerRead = document.querySelector('#che_agree');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+      field.date.setAttribute('type', 'text');
+      field.date.setAttribute('placeholder', 'YYYY-mm-dd');
+      field.time.setAttribute('type', 'text');
+      field.time.setAttribute('placeholder', 'HH:mm');
+    }
+  }
+
+  if (location.host === 'tvrs.ntpd.gov.tw') {
+    xinBei();
+  } else if (location.host === 'prsweb.tcpd.gov.tw') {
+    taiBei();
+  } else if (location.host === 'tvrweb.typd.gov.tw:3444') {
+    taoYuan();
+  } else if (location.host === 'traffic.hchpb.gov.tw') {
+    xinZhu();
+  } else if (location.host === 'trv.mpb.gov.tw') {
+    miaoLi();
+  } else if (location.host === 'suggest.police.taichung.gov.tw') {
     taichung();
   } else if (location.host === 'jiaowei.ncpb.gov.tw') {
     nanTou();
+  } else if (location.host === 'traffic.chpb.gov.tw') {
+    zhanghua();
+  } else if (location.host === 'trv.ylhpb.gov.tw') {
+    yunLin();
+  } else if (location.host === 'www.thb.gov.tw') {
+    gongluZongJu();
   }
 })();

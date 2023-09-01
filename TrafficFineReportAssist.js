@@ -2,11 +2,12 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.10
+// @version         0.11
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
+// @match           *://www.thb.gov.tw/*
 // @match           *://tvrs.ntpd.gov.tw/*
 // @match           *://prsweb.tcpd.gov.tw/*
 // @match           *://tvrweb.typd.gov.tw:3444/*
@@ -14,9 +15,17 @@
 // @match           *://trv.mpb.gov.tw/*
 // @match           *://suggest.police.taichung.gov.tw/*
 // @match           *://jiaowei.ncpb.gov.tw/sc11/*
-// @match           *://www.thb.gov.tw/*
 // @match           *://traffic.chpb.gov.tw/*
 // @match           *://trv.ylhpb.gov.tw/*
+// @match           *://tptv.klg.gov.tw/*
+// @match           *://www.cypd.gov.tw/*
+// @match           *://www.ccpb.gov.tw/*
+// @match           *://www.tnpd.gov.tw/*
+// @match           *://trafficmailbox.ptpolice.gov.tw/*
+// @match           *://ppl.report.ilcpb.gov.tw/*
+// @match           *://hlpb.twgov.mobi/*
+// @match           *://www.ttcpb.gov.tw/*
+
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
@@ -46,6 +55,55 @@
     tel: '',
     /** 電子信箱 */
     mail: '',
+  }
+
+  function gongluZongJu() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/Message_CarViolation.aspx') {
+      field.mail = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtMail');
+      field.fullName = document.querySelector('#ContentPlaceHolder1_c_29');
+      field.id = document.querySelector('#ContentPlaceHolder1_c_30');
+      field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
+      const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode');
+
+      field.mail.value = profile.mail;
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+
+      const verifyCode = localStorage.getItem('verifyCode')
+      if (verifyCode) verifyCodeInput.value = verifyCode;
+      verifyCodeInput.addEventListener('change', () => {
+        localStorage.setItem('verifyCode', verifyCodeInput.value);
+      });
+    }
+  }
+
+  function jiLong() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/reportcase/index.aspx') {
+      field.disclaimerRead = document.querySelector('#CheckBox1');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName === '/reportcase/ReportIndex.aspx') {
+      field.fullName = document.querySelector('#ReportName');
+      field.id = document.querySelector('#ReportCreditID');
+      field.tel = document.querySelector('#ReportMobile');
+      field.addr = document.querySelector('#ReportAddress');
+      field.mail = document.querySelector('#ReportEmail');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
   }
 
   function xinBei() {
@@ -277,30 +335,6 @@
     }
   }
 
-  function gongluZongJu() {
-    let field = {};
-
-    const urlPathName = location.pathname;
-    if (urlPathName === '/Message_CarViolation.aspx') {
-      field.mail = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtMail');
-      field.fullName = document.querySelector('#ContentPlaceHolder1_c_29');
-      field.id = document.querySelector('#ContentPlaceHolder1_c_30');
-      field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
-      const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode');
-
-      field.mail.value = profile.mail;
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-
-      const verifyCode = localStorage.getItem('verifyCode')
-      if (verifyCode) verifyCodeInput.value = verifyCode;
-      verifyCodeInput.addEventListener('change', () => {
-        localStorage.setItem('verifyCode', verifyCodeInput.value);
-      });
-    }
-  }
-
   function yunLin() {
     let field = {};
 
@@ -313,7 +347,7 @@
       field.mail = document.querySelector('#Email');
       field.date = document.querySelector('[name=SetDateOfOccurrence]');
       field.time = document.querySelector('[name=SetTimeOfOccurrence');
-      
+
       field.disclaimerRead = document.querySelector('#che_agree');
       field.disclaimerRead.click();
       field.disclaimerRead.click();
@@ -331,7 +365,179 @@
     }
   }
 
-  if (location.host === 'tvrs.ntpd.gov.tw') {
+  function jiaYiXian() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName.startsWith('TrafficMailbox/Index')) {
+      field.disclaimerRead = document.querySelector('#checkRead');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName.startsWith('/TrafficMailbox/Create')) {
+      field.fullName = document.querySelector('#FromName');
+      field.id = document.querySelector('#FromID');
+      field.tel = document.querySelector('#ContactPhone');
+      field.addr = document.querySelector('#ContactAddress');
+      field.mail = document.querySelector('#FromMail');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function jiaYiShi() {
+    // TODO
+  }
+
+  function taiNan() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName.startsWith('TrafficMailbox/Index')) {
+      field.disclaimerRead = document.querySelector('#checkRead');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName.startsWith('/TrafficMailbox/Create')) {
+      field.fullName = document.querySelector('#Name');
+      field.id = document.querySelector('#Pid');
+      field.tel = document.querySelector('#TEL');
+      field.addr = document.querySelector('#Address');
+      field.mail = document.querySelector('#Email');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function pingDong() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/') {
+      field.disclaimerRead = document.querySelector('#OK');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName === '/traffic_write.jsp') {
+      field.fullName = document.querySelector('#name');
+      field.id = document.querySelector('#sub');
+      field.tel = document.querySelector('#liaisontel');
+      field.addr = document.querySelector('#address');
+      field.mail = document.querySelector('#email');
+      field.actSelect = document.querySelector('#qclass');
+      field.dateTime = document.querySelector('#violationdatetime');
+      field.detail = document.querySelector('#detailcontent');
+      field.disclaimerRead = document.querySelector('#isagree');
+
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+      field.dateTime.removeAttribute('readonly');
+      // 依下拉選單自動填入描述
+      field.actSelect.onchange = () => {
+        field.detail.value = field.actSelect.value;
+      }
+      // 客製化車牌輸入，可以直接輸入整串
+      document.querySelector('#licensenumber1').style.setProperty('display', 'none');
+      document.querySelector('#licensenumber2').style.setProperty('display', 'none');
+      document.querySelector('.carnum span').style.setProperty('display', 'none');
+      const customLicenseInput = document.createElement('input');
+      customLicenseInput.setAttribute('placeholder', '完整車牌，包含-');
+      customLicenseInput.style.setProperty('display', 'block');
+      customLicenseInput.style.setProperty('width', 'calc(80% - 7px)');
+      document.querySelector('.carnum').insertBefore(customLicenseInput, document.querySelector('#licensenumber1 label'));
+      customLicenseInput.oninput = (() => {
+        const licenseInputL = document.querySelector('#licensenumber1');
+        const licenseInputR = document.querySelector('#licensenumber2');
+        const [licenseNumL, licenseNumR] = customLicenseInput.value.split('-');
+        licenseInputL.value = licenseNumL || '';
+        licenseInputR.value = licenseNumR || '';
+      });
+    }
+  }
+
+  function yiLan() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName.startsWith('/index.php')) {
+      field.fullName = document.querySelector('#name');
+      field.id = document.querySelector('#idcard');
+      field.tel = document.querySelector('#tel');
+      field.addr = document.querySelector('#address2');
+      field.mail = document.querySelector('#email');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function huaLian() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName.startsWith('/order/iframviolation_list.php')) {
+      field.fullName = document.querySelector('[name=name]');
+      field.id = document.querySelectorAll('#mform>.input-group>input')[1];
+      field.tel = document.querySelector('[name=mobile]');
+      field.addr = document.querySelector('[name=address]');
+      field.mail = document.querySelector('[name=email]');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  function taiDong() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName.startsWith('/chinese/home.jsp')) {
+      field.fullName = document.querySelector('#name');
+      field.id = document.querySelector('#pid');
+      field.tel = document.querySelector('#tel');
+      field.addr = document.querySelector('#address');
+      field.mail = document.querySelector('#email');
+      field.genderMale = document.querySelector('#sex1');
+      field.genderFemale = document.querySelector('#sex2');
+
+      if (profile.gender === GENDER.FEMALE) field.genderFemale.click();
+      else if (profile.gender === GENDER.MALE) field.genderMale.click();
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+    }
+  }
+
+  if (location.host === 'www.thb.gov.tw') {
+    gongluZongJu();
+  } else if (location.host === 'tptv.klg.gov.tw') {
+    jiLong();
+  } else if (location.host === 'tvrs.ntpd.gov.tw') {
     xinBei();
   } else if (location.host === 'prsweb.tcpd.gov.tw') {
     taiBei();
@@ -349,7 +555,19 @@
     zhanghua();
   } else if (location.host === 'trv.ylhpb.gov.tw') {
     yunLin();
-  } else if (location.host === 'www.thb.gov.tw') {
-    gongluZongJu();
+  } else if (location.host === 'www.cypd.gov.tw') {
+    jiaYiXian();
+  } else if (location.host === 'www.ccpb.gov.tw') {
+    jiaYiShi();
+  } else if (location.host === 'www.tnpd.gov.tw') {
+    taiNan();
+  } else if (location.host === 'trafficmailbox.ptpolice.gov.tw') {
+    pingDong();
+  } else if (location.host === 'ppl.report.ilcpb.gov.tw') {
+    yiLan();
+  } else if (location.host === 'hlpb.twgov.mobi') {
+    huaLian();
+  } else if (location.host === 'www.ttcpb.gov.tw') {
+    taiDong();
   }
 })();

@@ -171,7 +171,7 @@
     }
   }
 
-  function xinZhu() {
+  function xinZhuXian() {
     let field = {};
 
     const urlPathName = location.pathname;
@@ -193,6 +193,58 @@
       field.tel.value = profile.tel;
       field.addr.value = profile.addr;
       field.mail.value = profile.mail;
+    }
+  }
+
+  function xinZhuShi() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/hsin/cases/statement') {
+      field.disclaimerRead = document.querySelector('#has_read');
+      field.disclaimerRead.click();
+      field.disclaimerRead.click();
+      field.disclaimerRead.checked = true;
+      window.scrollTo(0, document.body.scrollHeight);
+    } else if (urlPathName === '/hsin/cases/new') {
+      field.fullName = document.querySelector('#case_name');
+      field.id = document.querySelector('#case_id_number');
+      field.tel = document.querySelector('#case_phone');
+      field.addr = document.querySelector('#case_contact_address');
+      field.mail = document.querySelector('#case_email');
+
+      field.fullName.value = profile.fullName;
+      field.id.value = profile.id;
+      field.tel.value = profile.tel;
+      field.addr.value = profile.addr;
+      field.mail.value = profile.mail;
+
+      waitForKeyElements("[aria-labelledby=select2-case_violated_at_date-container", () => {
+        field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_date-container]');
+        field.dateTime.parentNode.parentNode.style.width = '10em';
+        field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_hour-container]');
+        field.dateTime.parentNode.parentNode.style.width = '6em';
+        field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_min-container]');
+        field.dateTime.parentNode.parentNode.style.width = '6em';
+      });
+
+      // 客製化車牌輸入，可以直接輸入整串
+      document.querySelector('#case_first_car_number').parentNode.style?.setProperty('display', 'none');
+      document.querySelector('#case_last_car_number').parentNode.style?.setProperty('display', 'none');
+      const customLicenseInput = document.createElement('input');
+      customLicenseInput.setAttribute('placeholder', '完整車牌，包含-');
+      customLicenseInput.style.setProperty('display', 'block');
+      customLicenseInput.style.setProperty('width', 'calc(80%)');
+      document.querySelector('#case_first_car_number')
+        .parentNode.parentNode
+        .insertBefore(customLicenseInput, document.querySelector('#case_first_car_number').parentNode);
+      customLicenseInput.oninput = (() => {
+        const licenseInputL = document.querySelector('#case_first_car_number');
+        const licenseInputR = document.querySelector('#case_last_car_number');
+        const [licenseNumL, licenseNumR] = customLicenseInput.value.split('-');
+        licenseInputL.value = licenseNumL || '';
+        licenseInputR.value = licenseNumR || '';
+      });
     }
   }
 
@@ -544,7 +596,9 @@
   } else if (location.host === 'tvrweb.typd.gov.tw:3444') {
     taoYuan();
   } else if (location.host === 'traffic.hchpb.gov.tw') {
-    xinZhu();
+    xinZhuXian();
+  } else if (location.host === 'tra.hccp.gov.tw') {
+    xinZhuShi();
   } else if (location.host === 'trv.mpb.gov.tw') {
     miaoLi();
   } else if (location.host === 'suggest.police.taichung.gov.tw') {

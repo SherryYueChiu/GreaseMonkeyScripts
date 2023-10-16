@@ -2,7 +2,7 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.11
+// @version         0.12
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
@@ -70,13 +70,14 @@
       field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
       const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode');
 
+      document.querySelector('#ContentPlaceHolder1_c_33').value = '車牌刷白';
       field.mail.value = profile.mail;
       field.fullName.value = profile.fullName;
       field.id.value = profile.id;
       field.tel.value = profile.tel;
 
-      const verifyCode = localStorage.getItem('verifyCode')
-      if (verifyCode) verifyCodeInput.value = verifyCode;
+      const verifyCode = localStorage.getItem('verifyCode');
+      if (verifyCode && verifyCodeInput) verifyCodeInput.value = verifyCode;
       verifyCodeInput.addEventListener('change', () => {
         localStorage.setItem('verifyCode', verifyCodeInput.value);
       });

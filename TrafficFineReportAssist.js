@@ -12,6 +12,7 @@
 // @match           *://prsweb.tcpd.gov.tw/*
 // @match           *://tvrweb.typd.gov.tw:3444/*
 // @match           *://traffic.hchpb.gov.tw/*
+// @match           *://tra.hccp.gov.tw/*
 // @match           *://trv.mpb.gov.tw/*
 // @match           *://suggest.police.taichung.gov.tw/*
 // @match           *://jiaowei.ncpb.gov.tw/sc11/*
@@ -31,6 +32,7 @@
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
 // @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
 // @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
+// @require         http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @grant           none
 // ==/UserScript==
@@ -219,7 +221,7 @@
       field.addr.value = profile.addr;
       field.mail.value = profile.mail;
 
-      waitForKeyElements("[aria-labelledby=select2-case_violated_at_date-container", () => {
+      waitForKeyElements("[aria-labelledby=select2-case_violated_at_date-container]", () => {
         field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_date-container]');
         field.dateTime.parentNode.parentNode.style.width = '10em';
         field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_hour-container]');

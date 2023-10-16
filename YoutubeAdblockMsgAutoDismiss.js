@@ -16,6 +16,7 @@
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
 // @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
 // @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
+// @require         http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @grant           none
 // ==/UserScript==

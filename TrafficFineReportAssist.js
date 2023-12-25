@@ -2,7 +2,7 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.12
+// @version         0.13
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
@@ -27,7 +27,6 @@
 // @match           *://hlpb.twgov.mobi/*
 // @match           *://www.ttcpb.gov.tw/*
 
-// @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
 // @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
@@ -59,29 +58,40 @@
     mail: '',
   }
 
+  // 主菜單選項和對應的子菜單選項
+  const menuOptions = {
+    '燈光': ['闖紅燈', '轉彎不打燈', '變換車道不打燈', '靠邊停車不打燈', '起步不打燈', '紅燈迴轉', '不依規定使用燈光'],
+    '違停': ['逆向臨停', '併排臨停', '路口停車', '網狀線臨停'],
+    '逆向': ['逆向', '逆向臨停'],
+    '標線': ['跨越雙黃、白線', '超出停止線', '在左右轉專用道直行', '在直行專用道轉彎', '轉彎不先駛入內外車道', '行駛巢化線', '網狀線臨停'],
+    '其他': ['玩手機', '不停讓行人', '不依規定佩戴安全帽', '行駛人行道'],
+  };
+
   function gongluZongJu() {
-    let field = {};
+    try {
+      let field = {};
 
-    const urlPathName = location.pathname;
-    if (urlPathName === '/Message_CarViolation.aspx') {
-      field.mail = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtMail');
-      field.fullName = document.querySelector('#ContentPlaceHolder1_c_29');
-      field.id = document.querySelector('#ContentPlaceHolder1_c_30');
-      field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
-      const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode');
+      const urlPathName = location.pathname;
+      if (urlPathName === '/Message_CarViolation.aspx') {
+        field.mail = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtMail');
+        field.fullName = document.querySelector('#ContentPlaceHolder1_c_29');
+        field.id = document.querySelector('#ContentPlaceHolder1_c_30');
+        field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
+        const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode');
 
-      document.querySelector('#ContentPlaceHolder1_c_33').value = '車牌刷白';
-      field.mail.value = profile.mail;
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
+        document.querySelector('#ContentPlaceHolder1_c_33').value = '車牌刷白';
+        if (field.mail) field.mail.value = profile.mail;
+        if (field.fullName) field.fullName.value = profile.fullName;
+        if (field.id) field.id.value = profile.id;
+        if (field.tel) field.tel.value = profile.tel;
 
-      const verifyCode = localStorage.getItem('verifyCode');
-      if (verifyCode && verifyCodeInput) verifyCodeInput.value = verifyCode;
-      verifyCodeInput.addEventListener('change', () => {
-        localStorage.setItem('verifyCode', verifyCodeInput.value);
-      });
-    }
+        const verifyCode = localStorage.getItem('verifyCode');
+        if (verifyCode && verifyCodeInput) verifyCodeInput.value = verifyCode;
+        verifyCodeInput?.addEventListener('change', () => {
+          localStorage.setItem('verifyCode', verifyCodeInput.value);
+        });
+      }
+    } catch (err) { console.warn(err) }
   }
 
   function jiLong() {
@@ -326,6 +336,12 @@
         const [licenseNumL, licenseNumR] = customLicenseInput.value.split('-');
         licenseInputL.value = licenseNumL || '';
         licenseInputR.value = licenseNumR || '';
+      });
+
+      // 防止右鍵菜單的預設行為
+      field.detail.addEventListener('contextmenu', function (event) {
+        event.preventDefault();
+        createContextMenu(event.pageX, event.pageY, menuOptions, null);
       });
     }
   }
@@ -587,6 +603,92 @@
       field.mail.value = profile.mail;
     }
   }
+
+  function createContextMenu(x, y, options) {
+    removeExistingMenu();
+
+    const menu = document.createElement('div');
+    menu.id = 'custom-context-menu';
+    menu.style.position = 'absolute';
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+    menu.style.backgroundColor = 'white';
+    menu.style.border = '1px solid black';
+    menu.style.padding = '10px';
+    menu.style.zIndex = 1000; // 確保菜單顯示在最上層
+
+    for (const key in options) {
+      const item = document.createElement('div');
+      item.textContent = key;
+      item.style.padding = '5px';
+      item.style.cursor = 'pointer';
+
+      item.addEventListener('click', function (event) {
+        event.stopPropagation(); // 防止触发外层的点击事件
+        createSubmenu(
+          +getComputedStyle(menu).getPropertyValue('width').replace('px', '') + x,
+          y,
+          options[key]);
+      });
+      menu.appendChild(item);
+    }
+
+    document.body.appendChild(menu);
+  }
+
+  function createSubmenu(x, y, options) {
+    removeExistingMenu('submenu');
+
+    const submenu = document.createElement('div');
+    submenu.id = 'custom-context-submenu';
+    submenu.style.position = 'absolute';
+    submenu.style.left = `${x}px`;
+    submenu.style.top = `${y}px`;
+    submenu.style.backgroundColor = 'white';
+    submenu.style.border = '1px solid black';
+    submenu.style.padding = '10px';
+    submenu.style.zIndex = 1000;
+
+    options.forEach(option => {
+      const item = document.createElement('div');
+      item.textContent = option;
+      item.style.padding = '5px';
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', function () {
+        fillTextArea(option);
+        removeExistingMenu();
+      });
+      submenu.appendChild(item);
+    });
+
+    document.body.appendChild(submenu);
+  }
+
+  function removeExistingMenu(type = 'all') {
+    if (type === 'all' || type === 'menu') {
+      const existingMenu = document.getElementById('custom-context-menu');
+      if (existingMenu) {
+        existingMenu.remove();
+      }
+    }
+    if (type === 'all' || type === 'submenu') {
+      const existingSubmenu = document.getElementById('custom-context-submenu');
+      if (existingSubmenu) {
+        existingSubmenu.remove();
+      }
+    }
+  }
+
+  function fillTextArea(text) {
+    const textArea = document.getElementById('detailcontent');
+    if (textArea) {
+      textArea.value = text;
+    }
+  }
+
+  window.addEventListener('click', function () {
+    removeExistingMenu();
+  });
 
   if (location.host === 'www.thb.gov.tw') {
     gongluZongJu();

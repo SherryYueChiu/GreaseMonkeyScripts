@@ -2,7 +2,7 @@
 // @name            TrafficFineReportAssist
 // @name:zh-TW      交通違規檢舉輸入助手
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.13
+// @version         0.14
 // @description     交通違規檢舉輸入助手
 // @author          SherryYue
 // @copyright       SherryYue
@@ -29,9 +29,8 @@
 
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
-// @supportURL      "https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues"
-// @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
-// @require         http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js
+// @supportURL      https://github.com/sherryyuechiu/GreasyMonkeyScripts/issues
+// @homepage        https://github.com/sherryyuechiu/GreasyMonkeyScripts
 // @require         https://greasyfork.org/scripts/383527-wait-for-key-elements/code/Wait_for_key_elements.js?version=701631
 // @grant           none
 // ==/UserScript==
@@ -63,7 +62,7 @@
     '燈光': ['闖紅燈', '轉彎不打燈', '變換車道不打燈', '靠邊停車不打燈', '起步不打燈', '紅燈迴轉', '不依規定使用燈光'],
     '違停': ['逆向臨停', '併排臨停', '路口停車', '網狀線臨停'],
     '逆向': ['逆向', '逆向臨停'],
-    '標線': ['跨越雙黃、白線', '超出停止線', '在左右轉專用道直行', '在直行專用道轉彎', '轉彎不先駛入內外車道', '行駛巢化線', '網狀線臨停'],
+    '標線': ['跨越雙黃、白線', '超出停止線', '在左右轉專用道直行', '在直行專用道轉彎', '轉彎不先駛入內外車道', '行駛槽化線', '網狀線臨停'],
     '其他': ['玩手機', '不停讓行人', '不依規定佩戴安全帽', '行駛人行道'],
   };
 

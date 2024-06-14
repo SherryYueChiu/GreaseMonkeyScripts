@@ -2,7 +2,7 @@
 // @name         Mojim Lyrics
 // @name:zh-TW   魔鏡字幕播放器
 // @namespace    com.sherryyue.mojimlyrics
-// @version      1.6
+// @version      1.7
 // @description  Navigate and control lyrics display on Mojim websites with fixed font size and accurate time jumping
 // @description:zh-TW 將魔鏡歌詞網化為字幕播放器
 // @author          SherryYue
@@ -106,6 +106,13 @@
 
   function initLyrics() {
     lyricsPanel.innerHTML = '';
+
+    if (lyrics?.length >= 1) {
+      lyricsPanel.style.display = 'none';
+      toggleButton.style.display = 'block';
+      minimizeButton.style.display = 'none';
+      return;
+    }
 
     lyrics.forEach((line) => {
       const lyricElement = document.createElement('div');

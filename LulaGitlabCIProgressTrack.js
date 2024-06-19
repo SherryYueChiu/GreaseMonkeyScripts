@@ -2,7 +2,7 @@
 // @name            Lula Gitlab CI progress track tool
 // @name:zh-TW      Lula Gitlab CI 進度追蹤工具
 // @namespace       com.sherryyue.lulagitlabciprogresstrack
-// @version         0.3
+// @version         0.4
 // @description       Lula Gitlab CI progress track
 // @description:ZH-TW Lula Gitlab CI 進度追蹤
 // @author          SherryYue
@@ -118,10 +118,15 @@
       }
     }
 
+//     console.warn(`
+// undone: ${prevUndoneAmount} -> ${undoneAmount}
+// success: ${prevSuccessAmount} -> ${successAmount}
+// failed: ${prevFailedAmount} -> ${failedAmount}
+// `.trim());
     if (
-      prevUndoneAmount !== undoneAmount ||
-      prevSuccessAmount !== successAmount ||
-      prevFailedAmount !== failedAmount
+      prevUndoneAmount < undoneAmount ||
+      prevSuccessAmount < successAmount ||
+      prevFailedAmount < failedAmount
     ) {
       const LINE_BREAK = '\%0A';
       const projectName = document.head.querySelector('title').text.split(' · ')?.[1];
@@ -130,7 +135,7 @@
       else {
         if (failedAmount > 0) {
           message += LINE_BREAK + `全數完成，但有${failedAmount}項失敗`;
-        } else {
+        } else if(undoneAmount === 0) {
           message += LINE_BREAK + `全數完成`;
         }
       }

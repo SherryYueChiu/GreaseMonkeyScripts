@@ -1,8 +1,9 @@
 // ==UserScript==
+// @name:zh-tw      Dcard 訪客瀏覽腳本
 // @name            Dcard guest popup dismiss
-// @name:zh-TW      Dcard 訪客瀏覽腳本
 // @namespace       com.sherryyue.dcardguestmode
 // @version         0.6
+// @description:zh-tw     隱藏登入彈窗並解除滾動限制，讓沒登入時也能輕鬆瀏覽Dcard。
 // @description     Dismiss the annoying login request pop-up and unlock scrolling restriction while not logging in.
 // @author          SherryYue
 // @copyright       SherryYue

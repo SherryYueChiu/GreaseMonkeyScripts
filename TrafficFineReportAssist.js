@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name:zh-TW      臺灣交通違規檢舉自動輸入助手
+// @name:zh-tw      臺灣交通違規檢舉自動輸入助手
 // @name            Taiwan Traffic Violation Auto-Filler
 // @namespace       com.sherryyue.TrafficFineReportAssist
 // @version         0.16
-// @description:zh-TW     此腳本能自動填寫臺灣各交通違規檢舉網站上的檢舉人個資。下載後，只需在腳本內的 profile 部分填齊資料，每次訪問網站時，它都會自動幫你填入個資。
+// @description:zh-tw     此腳本能自動填寫臺灣各交通違規檢舉網站上的檢舉人個資。下載後，只需在腳本內的 profile 部分填齊資料，每次訪問網站時，它都會自動幫你填入個資。
 // @description     This script automatically fills in the reporter's personal information on various traffic violation reporting websites in Taiwan. After downloading, simply complete the data in the profile section of the script, and it will auto-fill your information on each website you visit.
 // @author          SherryYue
 // @copyright       SherryYue

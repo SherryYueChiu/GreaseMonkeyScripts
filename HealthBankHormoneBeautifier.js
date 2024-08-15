@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name:zh-TW   健保快易通荷爾蒙標準更正器 - 跨女版
+// @name:zh-tw   健保快易通荷爾蒙標準更正器 - 跨女版
 // @name         HealthBank Hormone Corrector - for MtF
 // @namespace    com.sherryyue.healthbankmtfhormonebeautifier
 // @version      0.1
-// @description:zh-TW 此腳本更正健保快易通應用程式中荷爾蒙檢驗結果（如雄性激素和雌激素）的顏色顯示，無論證件上的性別為何，一律使用女性標準。這確保尚未更改證件性別的跨性別女性能看到準確且公平的荷爾蒙數值顯示。
+// @description:zh-tw 此腳本更正健保快易通應用程式中荷爾蒙檢驗結果（如雄性激素和雌激素）的顏色顯示，無論證件上的性別為何，一律使用女性標準。這確保尚未更改證件性別的跨性別女性能看到準確且公平的荷爾蒙數值顯示。
 // @description  This script corrects the display of hormone test results (such as androgens and estrogens) in the HealthBank app to use female standards for color coding, regardless of the gender on the ID. This ensures that transgender women who have not updated their ID gender see accurate and fair representation of their hormone levels.
 // @author          SherryYue
 // @copyright       SherryYue

@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name:zh-TW      GitLab CI/CD 部署站別分辨 - AngPao
+// @name:zh-tw      GitLab CI/CD 部署站別分辨 - AngPao
 // @name            GitLab CI/CD Deployment Site Identifier - AngPao
 // @namespace       com.sherryyue.lulagitlabciloginfo
 // @version         0.11
-// @description:ZH-TW 此腳本增強了 GitLab CI/CD 中 AngPao 專案的構建日誌，通過懸浮窗口顯示部署環境和站別訊息，使得更容易識別和區分不同的部署階段。
+// @description:zh-tw 此腳本增強了 GitLab CI/CD 中 AngPao 專案的構建日誌，通過懸浮窗口顯示部署環境和站別訊息，使得更容易識別和區分不同的部署階段。
 // @description       This script enhances the build logs in GitLab CI/CD for the AngPao project by listing log messages on a floating table that indicate the deployment environment and site. This makes it easier to identify and differentiate between various deployment stages.
 // @author          SherryYue
 // @copyright       SherryYue

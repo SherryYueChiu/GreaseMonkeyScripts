@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name:zh-TW      Yout.com 高畫質影片下載解鎖器
+// @name:zh-tw      Yout.com 高畫質影片下載解鎖器
 // @name            Yout.com High-Quality Video Downloader Unlocker
 // @namespace       com.sherryyue.youcomunlock
 // @version         0.4
-// @description:zh-TW     此腳本解鎖 Yout.com 上的 720p 和 1080p 影片下載按鈕，讓所有用戶無需付費會員即可下載高畫質的 YouTube 影片。
+// @description:zh-tw     此腳本解鎖 Yout.com 上的 720p 和 1080p 影片下載按鈕，讓所有用戶無需付費會員即可下載高畫質的 YouTube 影片。
 // @description     This script unlocks the download buttons for 720p and 1080p videos on Yout.com, allowing all users to download high-quality YouTube videos without a paid membership.
 // @author          SherryYue
 // @copyright       SherryYue

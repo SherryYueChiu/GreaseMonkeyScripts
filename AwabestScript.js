@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name            Awabest sign-in mission
-// @name:zh-TW      Awabest 自動簽到
+// @name:zh-tw      Awabest 自動簽到
 // @namespace       com.sherryyue.awabestAutoDailySignin
 // @version         0.2
 // @description     	Auto finish daily sign-in mission at awabest.com.
-// @description:zh-TW	自動完成Awabest.com每日簽到
+// @description:zh-tw	自動完成Awabest.com每日簽到
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT

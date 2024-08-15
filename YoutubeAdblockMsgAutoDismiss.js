@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name            YoutubeAdblockMsgAutoDismiss
-// @name:zh-TW      自動關閉Adblock提示
+// @name:zh-tw      自動關閉Adblock提示
 // @namespace       com.sherryyue.YoutubeAdblockMsgAutoDismiss
 // @version         0.1
 // @description     Youtube Adblock auto dismiss. For 2023/10 and further
-// @description:zh-TW     自動關閉Adblock提示，應對2023/10版本
+// @description:zh-tw     自動關閉Adblock提示，應對2023/10版本
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT

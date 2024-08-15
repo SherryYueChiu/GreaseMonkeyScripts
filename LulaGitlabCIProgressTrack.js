@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name:zh-TW      GitLab CI/CD Telegram 進度追蹤 - Lula
+// @name:zh-tw      GitLab CI/CD Telegram 進度追蹤 - Lula
 // @name            GitLab CI/CD Telegram Progress Notifier - Lula
 // @namespace       com.sherryyue.lulagitlabciprogresstrack
 // @version         0.5
-// @description:ZH-TW 此腳本在 GitLab CI/CD 中發送部署成功與失敗通知到 Telegram 頻道。它會通知您流水線和工作的成功或失敗，讓您在離開時能夠在手機或其他裝置上接收更新。
+// @description:zh-tw 此腳本在 GitLab CI/CD 中發送部署成功與失敗通知到 Telegram 頻道。它會通知您流水線和工作的成功或失敗，讓您在離開時能夠在手機或其他裝置上接收更新。
 // @description       This script sends notifications to a Telegram channel on GitLab CI/CD. It notifies you of the success or failure of pipelines and jobs, allowing you to receive updates on your mobile device or other devices while you are away.
 // @author          SherryYue
 // @copyright       SherryYue

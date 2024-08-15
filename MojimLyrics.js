@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Mojim Lyrics
 // @name:zh-TW   魔鏡字幕播放器
+// @name         Mojim Lyrics Player
 // @namespace    com.sherryyue.mojimlyrics
-// @version      1.7
-// @description  Navigate and control lyrics display on Mojim websites with fixed font size and accurate time jumping
-// @description:zh-TW 將魔鏡歌詞網化為字幕播放器
+// @version      1.8
+// @description:zh-TW 此腳本將魔鏡歌詞網的歌詞頁面轉變為歌詞播放器，當打開某首歌的歌詞頁面時，自動生成類似提詞機的介面，讓用戶能夠同步讀唱歌詞。
+// @description  This script transforms Mojim lyrics pages into a lyrics player, automatically generating a teleprompter-like interface when a song's lyrics page is opened. This allows users to read and sing along with the lyrics in sync with the recorded timestamps.
 // @author          SherryYue
 // @copyright       SherryYue
 // @match        *://mojim.com/*

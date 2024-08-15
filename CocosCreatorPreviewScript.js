@@ -1,16 +1,14 @@
 // ==UserScript==
-// @name            Cocos Creator preview tool
-// @name:zh-TW      Cocos Creator 預覽小工具
+// @name:zh-TW   Cocos 滿版錯誤訊息屏蔽器
+// @name         Cocos Fullscreen Error Blocker
 // @namespace       com.sherryyue.cocoscreatorpreviewtool
-// @version         0.5
-// @description       Cocos Creator preview tool.
-// @description:ZH-TW Cocos Creator 預覽小工具。
+// @version         0.6
+// @description:zh-TW 此腳本在 Cocos 遊戲引擎的瀏覽器預覽模板中添加了一個按鈕，用於關閉錯誤訊息覆蓋層。當發生滿版的嚴重錯誤彈出時，只需點擊按鈕即可關閉覆蓋層，讓您能夠繼續使用遊戲而不受干擾。
+// @description  This script adds a button to close the error message overlay in the Cocos game engine's browser preview template. When a fullscreen fatal error hint pops, the overlay can be closed with a single click, allowing you to continue using the game without interruption.
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
-// @match           http://localhost:7456/
-// @match           http://192.168.31.15:7456/*
-// @match           https://*.rrbgaming66.com/
+// @match           http://*:7456/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png

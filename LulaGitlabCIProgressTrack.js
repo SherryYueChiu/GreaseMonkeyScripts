@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name            Lula Gitlab CI progress track tool
-// @name:zh-TW      Lula Gitlab CI 進度追蹤工具
+// @name:zh-TW      GitLab CI/CD Telegram 進度追蹤 - Lula
+// @name            GitLab CI/CD Telegram Progress Notifier - Lula
 // @namespace       com.sherryyue.lulagitlabciprogresstrack
-// @version         0.4
-// @description       Lula Gitlab CI progress track
-// @description:ZH-TW Lula Gitlab CI 進度追蹤
+// @version         0.5
+// @description:ZH-TW 此腳本在 GitLab CI/CD 中發送部署成功與失敗通知到 Telegram 頻道。它會通知您流水線和工作的成功或失敗，讓您在離開時能夠在手機或其他裝置上接收更新。
+// @description       This script sends notifications to a Telegram channel on GitLab CI/CD. It notifies you of the success or failure of pipelines and jobs, allowing you to receive updates on your mobile device or other devices while you are away.
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
@@ -25,7 +25,7 @@
   let pipelineEverUpdate = [];
   let prevUndoneAmount = -1, prevSuccessAmount = -1, prevFailedAmount = -1;
 
-  PIPELINE_STATE = {
+  const PIPELINE_STATE = {
     PENDING: 'pending',
     RUNNING: 'running',
     SUCCESS: 'success',
@@ -62,9 +62,7 @@
   }
 
   function isHTMLElement(obj) {
-    if (obj.nodeType) {
-      return obj.nodeType == 1;
-    }
+    return obj?.nodeType == 1;
   }
 
   function main() {
@@ -118,11 +116,11 @@
       }
     }
 
-//     console.warn(`
-// undone: ${prevUndoneAmount} -> ${undoneAmount}
-// success: ${prevSuccessAmount} -> ${successAmount}
-// failed: ${prevFailedAmount} -> ${failedAmount}
-// `.trim());
+    //     console.warn(`
+    // undone: ${prevUndoneAmount} -> ${undoneAmount}
+    // success: ${prevSuccessAmount} -> ${successAmount}
+    // failed: ${prevFailedAmount} -> ${failedAmount}
+    // `.trim());
     if (
       prevUndoneAmount < undoneAmount ||
       prevSuccessAmount < successAmount ||
@@ -135,7 +133,7 @@
       else {
         if (failedAmount > 0) {
           message += LINE_BREAK + `全數完成，但有${failedAmount}項失敗`;
-        } else if(undoneAmount === 0) {
+        } else if (undoneAmount === 0) {
           message += LINE_BREAK + `全數完成`;
         }
       }

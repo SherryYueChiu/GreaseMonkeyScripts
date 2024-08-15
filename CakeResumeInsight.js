@@ -1,10 +1,10 @@
 // ==UserScript==
+// @name:zh-tw      CakeResume 誰造訪了我的個人檔案
 // @name            View all visitor on CakeResume insight page
-// @name:zh-tw      CakeResume誰造訪了我的個人檔案
 // @namespace       com.sherryyue.cakeresumeunlock
-// @version         0.4
-// @description     Unlock part of premium functions on https://www.cakeresume.com/. Including view all visitors and messages form them
-// @description:zh-tw 解鎖部分高級功能：看見所有的訪客、查看未建立聯繫的公司傳來的完整訊息
+// @version         0.5
+// @description:zh-tw 此腳本移除 CakeResume 平台上「誰造訪了我的個人檔案」頁面的限制，讓用戶能完整查看並互動來自求職者、雇主或獵頭的訊息，不再有遮蔽或模糊顯示的內容。這些功能原本是需要購買付費會員才能達到的效果。
+// @description     This script removes the restrictions on the 'Who Visited My Profile' page in CakeResume, allowing users to view and interact with messages from job seekers, employers, or headhunters without any obstructions or blurred content. Originally, these features are only available to paid members.
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT

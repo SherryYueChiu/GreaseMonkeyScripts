@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name            Line Store Sticker Downloader
-// @name:zh-TW      Line Store 貼圖下載器
+// @name:zh-TW      Line Store 貼圖輕鬆下載器
+// @name            Line Store Easy Sticker Downloader
 // @namespace       com.sherryyue.linestickerstoredownloader
-// @version         0.4
-// @description       Line Store Sticker Downloader.
-// @description:ZH-TW Line Store 貼圖下載器。
+// @version         0.5
+// @description:ZH-TW 此腳本讓用戶能輕鬆下載 Line 貼圖商店網站上的貼圖。左鍵點擊任何貼圖時，預覽圖將在新分頁中開啟，方便瀏覽或右鍵下載貼圖。
+// @description       This script allows users to easily download stickers from the Line Store website. By left-clicking on any sticker, the preview image will open in a new tab, making it simple to view or download the sticker using the right-click menu.
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT

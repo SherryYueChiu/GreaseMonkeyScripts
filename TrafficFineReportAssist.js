@@ -2,7 +2,7 @@
 // @name:zh-tw      臺灣交通違規檢舉自動輸入助手
 // @name            Taiwan Traffic Violation Auto-Filler
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.17
+// @version         0.18
 // @description:zh-tw     此腳本能自動填寫臺灣各交通違規檢舉網站上的檢舉人個資。下載後，只需在腳本內的 profile 部分填齊資料，每次訪問網站時，它都會自動幫你填入個資。
 // @description     This script automatically fills in the reporter's personal information on various traffic violation reporting websites in Taiwan. After downloading, simply complete the data in the profile section of the script, and it will auto-fill your information on each website you visit.
 // @run-at document-end
@@ -11,6 +11,7 @@
 // @license         MIT
 // @match           *://wos.hpb.gov.tw/*
 // @match           *://www.thb.gov.tw/*
+// @match           *://polcar.moenv.gov.tw/*
 // @match           *://tvrs.ntpd.gov.tw/*
 // @match           *://prsweb.tcpd.gov.tw/*
 // @match           *://tvrweb.typd.gov.tw:3444/*
@@ -126,6 +127,31 @@
         });
       }
     } catch (err) { console.warn(err) }
+  }
+
+  function wuZeChe() {
+    let field = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/case/Step0.aspx') {
+      field.disclaimerRead = document.querySelector('#ctl00_cphBody_rblIsAgree_0');
+      field.disclaimerRead.click();
+      scrollToBottom();
+    } else if (urlPathName === '/case/Step1.aspx') {
+      field.fullName = document.querySelector('input#ctl00_cphBody_tbxAppName');
+      field.id = document.querySelector('input#ctl00_cphBody_tbxAppID');
+      field.tel = document.querySelector('input#ctl00_cphBody_tbxAppTel3');
+      field.addr = document.querySelector('input#ctl00_cphBody_tbxAppAdd');
+      field.mail = document.querySelector('input#ctl00_cphBody_tbxAppEmail');
+
+      if (field) {
+        field.fullName.value = profile.fullName;
+        field.id.value = profile.id;
+        field.tel.value = profile.tel;
+        field.addr.value = profile.addr;
+        field.mail.value = profile.mail;
+      }
+    }
   }
 
   function jiLong() {
@@ -739,6 +765,8 @@
     guoDao();
   } else if (location.host === 'www.thb.gov.tw') {
     gongluZongJu();
+  } else if (location.host === 'polcar.moenv.gov.tw') {
+    wuZeChe();
   } else if (location.host === 'tptv.klg.gov.tw') {
     jiLong();
   } else if (location.host === 'tvrs.ntpd.gov.tw') {

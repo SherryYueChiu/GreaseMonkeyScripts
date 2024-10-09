@@ -2,15 +2,16 @@
 // @name:zh-tw      OMG遊戲速度控制器
 // @name            OMG Game Speed Controller
 // @namespace       com.sherryyue.omggamespeedcontroller
-// @version         0.4
-// @description:zh-tw   調整嵌入網頁的遊戲速度，提供一個滑動條和重置按鈕，並更新 window.forceSpeed
-// @description         Adjust game speed with a slider and reset button, update window.forceSpeed
+// @version         0.5
+// @description:zh-tw   調整嵌入網頁的遊戲速度，提供一個滑動條、重置按鈕和暫停按鈕，並更新 window.forceSpeed
+// @description         Adjust game speed with a slider, reset button, and pause button, update window.forceSpeed
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
 // @include         *://*:7456/*
 // @match           *://*.ssgaka.com/*
 // @exclude         *://*.ssgaka.com/history/*
+// @exclude         *://*.ssgaka.com/history2/*
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
@@ -22,11 +23,11 @@
 (function () {
     'use strict';
 
-    // Create the draggable UI container (collapsed by default)
+    // Existing UI container setup
     const container = document.createElement('div');
     container.style.position = 'fixed';
-    container.style.top = '50px'; // Initial position (can be adjusted)
-    container.style.right = '-200px'; // Fully hidden when collapsed
+    container.style.top = '50px';
+    container.style.right = '-200px';
     container.style.width = '200px';
     container.style.height = 'auto';
     container.style.background = 'rgba(255, 255, 255, 0.9)';
@@ -37,7 +38,7 @@
     container.style.transition = 'right 0.3s ease';
     container.style.cursor = 'pointer';
 
-    // Create the toggle button (clickable area to expand/collapse)
+    // Toggle button setup
     const toggleButton = document.createElement('div');
     toggleButton.style.position = 'absolute';
     toggleButton.style.top = '0';
@@ -45,17 +46,17 @@
     toggleButton.style.width = '20px';
     toggleButton.style.height = '100%';
     toggleButton.style.background = '#007AFF';
-    toggleButton.style.borderRadius = '12px 0 0 12px'; // Only left side of the button with rounded corners
+    toggleButton.style.borderRadius = '12px 0 0 12px';
     toggleButton.style.display = 'flex';
     toggleButton.style.alignItems = 'center';
     toggleButton.style.justifyContent = 'center';
     toggleButton.style.color = '#fff';
-    toggleButton.textContent = '◀'; // Initial arrow direction
+    toggleButton.textContent = '◀';
     toggleButton.style.fontSize = '16px';
     toggleButton.style.cursor = 'pointer';
     container.appendChild(toggleButton);
 
-    // Create the label and speed display in one line
+    // Label and speed display setup
     const labelContainer = document.createElement('div');
     labelContainer.style.display = 'flex';
     labelContainer.style.justifyContent = 'space-between';
@@ -73,6 +74,7 @@
     labelContainer.appendChild(label);
     labelContainer.appendChild(speedDisplay);
 
+    // Speed slider setup
     const slider = document.createElement('input');
     slider.type = 'range';
     slider.min = '0.2';
@@ -89,18 +91,7 @@
         return speed >= 1 ? speed.toFixed(0) + 'x' : '' + (+speed.toFixed(1)) + 'x';
     }
 
-    const resetButton = document.createElement('button');
-    resetButton.textContent = 'Reset to 1x';
-    resetButton.style.backgroundColor = '#007AFF';
-    resetButton.style.color = '#fff';
-    resetButton.style.border = 'none';
-    resetButton.style.borderRadius = '8px';
-    resetButton.style.padding = '5px 10px';
-    resetButton.style.cursor = 'pointer';
-    resetButton.style.fontSize = '14px';
-    resetButton.style.width = '100%';
-    resetButton.style.marginTop = '10px';
-
+    // Speed adjustment function
     function adjustGameSpeed(speed) {
         window.forceSpeed = speed;
         document.querySelectorAll('video, audio').forEach((media) => {
@@ -114,28 +105,68 @@
         adjustGameSpeed(logValue);
     });
 
+    // Create a container for the buttons (flex layout)
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.justifyContent = 'space-between';
+    buttonContainer.style.marginTop = '10px';
+
+    // Reset button
+    const resetButton = document.createElement('button');
+    resetButton.textContent = 'Reset to 1x';
+    resetButton.style.backgroundColor = '#007AFF';
+    resetButton.style.color = '#fff';
+    resetButton.style.border = 'none';
+    resetButton.style.borderRadius = '8px';
+    resetButton.style.padding = '5px 10px';
+    resetButton.style.cursor = 'pointer';
+    resetButton.style.fontSize = '14px';
+    resetButton.style.flexGrow = '2'; // Larger width for longer text
+    resetButton.style.marginRight = '5px'; // Adds a small gap between buttons
+
     resetButton.addEventListener('click', function () {
         slider.value = '7.176';
         adjustGameSpeed(1);
     });
 
+    // Pause button
+    const pauseButton = document.createElement('button');
+    pauseButton.textContent = 'Pause';
+    pauseButton.style.backgroundColor = '#FF4500';
+    pauseButton.style.color = '#fff';
+    pauseButton.style.border = 'none';
+    pauseButton.style.borderRadius = '8px';
+    pauseButton.style.padding = '5px 10px';
+    pauseButton.style.cursor = 'pointer';
+    pauseButton.style.fontSize = '14px';
+    pauseButton.style.flexGrow = '1'; // Smaller width for shorter text
+
+    pauseButton.addEventListener('click', function () {
+        adjustGameSpeed(0);
+    });
+
+    // Append buttons to the button container
+    buttonContainer.appendChild(resetButton);
+    buttonContainer.appendChild(pauseButton);
+
+    // Append elements to the container
     container.appendChild(labelContainer);
     container.appendChild(slider);
-    container.appendChild(resetButton);
+    container.appendChild(buttonContainer);
     document.body.appendChild(container);
 
-    // Toggle button click event for expanding/collapsing
+    // Toggle button for collapsing/expanding
     toggleButton.addEventListener('click', function () {
         if (container.style.right === '0px') {
-            container.style.right = '-200px'; // Fully hidden when collapsed
-            toggleButton.textContent = '◀'; // Collapse
+            container.style.right = '-200px';
+            toggleButton.textContent = '◀';
         } else {
-            container.style.right = '0px'; // Fully expanded
-            toggleButton.textContent = '▶'; // Expand
+            container.style.right = '0px';
+            toggleButton.textContent = '▶';
         }
     });
 
-    // Make the container draggable vertically only
+    // Draggable logic for vertical movement only
     let isDragging = false;
     let offsetY = 0;
 
@@ -148,9 +179,9 @@
     document.addEventListener('mousemove', function (event) {
         if (isDragging) {
             let newTop = event.clientY - offsetY;
-            if (newTop < 0) newTop = 0; // Prevent dragging above the window
+            if (newTop < 0) newTop = 0;
             if (newTop + container.offsetHeight > window.innerHeight) {
-                newTop = window.innerHeight - container.offsetHeight; // Prevent dragging below the window
+                newTop = window.innerHeight - container.offsetHeight;
             }
             container.style.top = `${newTop}px`;
         }

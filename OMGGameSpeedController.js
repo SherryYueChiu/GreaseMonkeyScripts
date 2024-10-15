@@ -2,7 +2,7 @@
 // @name:zh-tw      OMG遊戲速度控制器
 // @name            OMG Game Speed Controller
 // @namespace       com.sherryyue.omggamespeedcontroller
-// @version         0.7
+// @version         0.8
 // @description:zh-tw   調整嵌入網頁的遊戲速度，提供一個滑動條、重置按鈕和暫停按鈕，並更新 window.forceSpeed
 // @description         Adjust game speed with a slider, reset button, and pause button, update window.forceSpeed
 // @author          SherryYue
@@ -37,6 +37,7 @@
     container.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
     container.style.transition = 'right 0.3s ease';
     container.style.cursor = 'pointer';
+    container.style.boxSizing = 'content-box';
 
     // Toggle button setup
     const toggleButton = document.createElement('div');

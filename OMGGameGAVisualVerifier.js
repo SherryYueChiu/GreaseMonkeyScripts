@@ -2,14 +2,14 @@
 // @name:zh-tw      OMG遊戲GA視覺驗證工具
 // @name            OMG Game GA Visual Verifier
 // @namespace       com.sherryyue.omggamespeedcontroller
-// @version         0.4
+// @version         0.5
 // @description:zh-tw       在畫面上toast出剛被記錄的 dataLayer 事件，方便驗證 GA 的事件追蹤
 // @description             Toast the latest dataLayer event on the screen for verifying GA event tracking
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
 // @match           *://*.ssgaka.com/*
-// @match           *://7sz*.com/*
+// @include         *://7sz*.com/*
 // @exclude         *://*/history/*
 // @exclude         *://*/history2/*
 // @exclude         *://*/review/*

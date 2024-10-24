@@ -2,7 +2,7 @@
 // @name:zh-tw      OMG遊戲速度控制器
 // @name            OMG Game Speed Controller
 // @namespace       com.sherryyue.omggamespeedcontroller
-// @version         0.10
+// @version         0.11
 // @description:zh-tw   調整嵌入網頁的遊戲速度，提供一個滑動條、重置按鈕和暫停按鈕，並更新 window.forceSpeed
 // @description         Adjust game speed with a slider, reset button, and pause button, update window.forceSpeed
 // @author          SherryYue
@@ -10,7 +10,7 @@
 // @license         MIT
 // @include         *://*:7456/*
 // @match           *://*.ssgaka.com/*
-// @match           *://7sz*.com/*
+// @include         *://7sz*.com/*
 // @exclude         *://*/history/*
 // @exclude         *://*/history2/*
 // @exclude         *://*/review/*

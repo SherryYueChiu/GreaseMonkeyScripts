@@ -2,14 +2,14 @@
 // @name:zh-tw      內嵌OMG遊戲環境識別
 // @name            Embeded OMG Game Environment Identifier
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.1
+// @version         0.3
 // @description:zh-tw OMG遊戲識別平台內嵌環境
 // @description       Identify the embeded OMG game environment
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
 // @match           *://*.ssgaka.com/*
-// @match           *://7sz*.com/*
+// @include         *://7sz*.com/*
 // @exclude         *://*/history/*
 // @exclude         *://*/history2/*
 // @exclude         *://*/review/*
@@ -37,8 +37,10 @@
   function showToast(message) {
     Toastify({
       text: message,
-      duration: 6000,
+      duration: -1,
+      position: "left",
       gravity: "bottom",
+      close: true,
     }).showToast();
   }
 

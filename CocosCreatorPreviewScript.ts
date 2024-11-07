@@ -68,59 +68,53 @@
   }
 
   let errorOccur = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    hideErrorBtn.style.display = "block";
-    hideErrorBtn.style.opacity = 1;
+    let $hideErrorBtn = document.querySelector<HTMLElement>('.hideError');
+    $hideErrorBtn.style.display = "block";
+    $hideErrorBtn.style.opacity = '1';
   }
 
   let hideErrorBlock = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    hideErrorBtn.style.display = "block";
-    hideErrorBtn.style.opacity = 0.4;
-    let errorBlock = document.getElementById('error');
-    errorBlock.style.display = "none";
+    let $hideErrorBtn = document.querySelector<HTMLElement>('.hideError');
+    $hideErrorBtn.style.display = 'block';
+    $hideErrorBtn.style.opacity = '0.4';
+    let $errorBlock = document.getElementById('error');
+    $errorBlock.style.display = "none";
   }
 
   let showErrorBlock = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    hideErrorBtn.style.display = "block";
-    hideErrorBtn.style.opacity = 1;
-    let errorBlock = document.getElementById('error');
-    errorBlock.style.display = "block";
+    let $hideErrorBtn = document.querySelector<HTMLElement>('.hideError');
+    $hideErrorBtn.style.display = 'block';
+    $hideErrorBtn.style.opacity = '1';
+    let $errorBlock = document.getElementById('error');
+    $errorBlock.style.display = "block";
   }
 
   let showErrorBtn = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    hideErrorBtn.style.display = "block";
+    let $hideErrorBtn = document.querySelector<HTMLElement>('.hideError');
+    $hideErrorBtn.style.display = "block";
   }
 
   let hideErrorBtn = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    hideErrorBtn.style.display = "none";
-  }
-
-  let toggleHideErrorBtn = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    if (hideErrorBtn.style.display == "none") showErrorBtn();
-    else hideErrorBtn();
+    let $hideErrorBtn = document.querySelector<HTMLElement>('.hideError');
+    $hideErrorBtn.style.display = "none";
   }
 
   let toggleHideErrorBlock = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    if (hideErrorBtn.style.opacity == 1) hideErrorBlock();
+    let $hideErrorBtn = document.querySelector<HTMLElement>('.hideError');
+    if ($hideErrorBtn.style.opacity == '1') hideErrorBlock();
     else showErrorBlock();
   }
 
   let bindEvent = () => {
-    let hideErrorBtn = document.querySelector('.hideError');
-    hideErrorBtn.addEventListener("click", () => {
+    let $hideErrorBtn = document.querySelector<HTMLElement>('.hideError');
+    $hideErrorBtn.addEventListener("click", () => {
       toggleHideErrorBlock();
     });
   }
 
   let errorBlockObserver = new MutationObserver((mutations, obs) => {
-    const errorContent = document.querySelector('.error .error-main');
-    if (errorContent && errorContent.innerHTML != "") {
+    const $errorContent = document.querySelector<HTMLElement>('.error .error-main');
+    if ($errorContent && $errorContent.innerHTML != "") {
       errorOccur();
       return;
     } else {

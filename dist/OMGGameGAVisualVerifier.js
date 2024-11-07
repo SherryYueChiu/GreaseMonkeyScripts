@@ -21,10 +21,8 @@
 // @require         https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js
 // @grant           none
 // ==/UserScript==
-
 (function () {
     'use strict';
-
     // 動態載入 CSS 的函式
     function loadCSS(url) {
         var link = document.createElement('link');
@@ -34,9 +32,9 @@
         document.head.appendChild(link);
     }
     loadCSS('https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css');
-
     // 顯示 toast 的函式
     function showToast(message) {
+        // @ts-ignore
         Toastify({
             text: message,
             duration: 6000,
@@ -48,24 +46,20 @@
             }
         }).showToast();
     }
-
     // 初始的 dataLayer 長度
+    // @ts-ignore
     let previousLength = window.dataLayer ? window.dataLayer.length : 0;
-
     // 將 JSON 物件格式化，每個屬性顯示在新的一行
     function formatJsonObject(jsonObject) {
         let formattedString = '';
-
         // 優先顯示 event 屬性
         if (jsonObject.hasOwnProperty('event')) {
             formattedString += `event: ${JSON.stringify(jsonObject['event'])}\n`;
         }
-
         // 優先顯示 page 屬性
         if (jsonObject.hasOwnProperty('page')) {
             formattedString += `page: ${JSON.stringify(jsonObject['page'])}\n`;
         }
-
         for (const key in jsonObject) {
             if (jsonObject.hasOwnProperty(key) && key !== 'event' && key !== 'page') {
                 let value = jsonObject[key];
@@ -75,15 +69,16 @@
                 formattedString += `${key}: ${JSON.stringify(value)}\n`;
             }
         }
-
         return formattedString;
     }
-
     function checkDataLayer() {
+        // @ts-ignore
         if (window.dataLayer) {
+            // @ts-ignore
             let currentLength = window.dataLayer.length;
             if (currentLength > previousLength) {
                 // 新事件被加入
+                // @ts-ignore
                 let newEvent = window.dataLayer[window.dataLayer.length - 1];
                 if (newEvent && newEvent.event) {
                     const filteredEvent = {};
@@ -92,16 +87,15 @@
                             filteredEvent[key] = newEvent[key];
                         }
                     }
-
                     showToast(formatJsonObject(filteredEvent));
                 }
-            } else if (currentLength < previousLength) {
+            }
+            else if (currentLength < previousLength) {
                 showToast('dataLayer被重置了');
             }
             previousLength = currentLength;
         }
     }
-
     // 每秒檢查一次 dataLayer
     setInterval(checkDataLayer, 100);
 })();

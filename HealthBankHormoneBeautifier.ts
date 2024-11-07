@@ -19,7 +19,7 @@
 (function () {
   'use strict';
 
-  function extractNumbers(input) {
+  function extractNumbers(input: string) {
     const matches = input.match(/-?\d+(\.\d+)?/g);
     return matches ? matches.map(Number)[0] : 0;
   }

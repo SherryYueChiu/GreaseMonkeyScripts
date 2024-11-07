@@ -42,27 +42,30 @@
 (function () {
   'use strict';
 
-  const GENDER = {
-    MALE: 1,
-    FEMALE: 2,
-  }
-  const profile = {
-    /** 全名 */
-    fullName: '',
-    /** 性別 GENDER.MALE 或 GENDER.FEMALE */
-    gender: GENDER.FEMALE,
-    /** 身分證字號 */
-    id: '',
-    /** 你的聯絡地址 */
-    addr: '',
-    /** 家用電話或手機號碼 */
-    tel: '',
-    /** 電子信箱 */
-    mail: '',
+  enum GENDER {
+    MALE = 1,
+    FEMALE = 2,
   }
 
-  // 主菜單選項和對應的子菜單選項
-  const menuOptions = {
+  interface Profile {
+    fullName: string;
+    gender: GENDER;
+    id: string;
+    addr: string;
+    tel: string;
+    mail: string;
+  }
+
+  const profile: Profile = {
+    fullName: 'XXX',
+    gender: GENDER.FEMALE,
+    id: 'Y123456789',
+    addr: 'XXX市XXX區XXX路XXX號',
+    tel: '0912345678',
+    mail: 'your-email@mail.com',
+  };
+
+  const menuOptions: { [key: string]: string[] } = {
     '燈光': ['闖紅燈', '轉彎不打燈', '變換車道不打燈', '靠邊停車不打燈', '起步不打燈', '紅燈迴轉', '不依規定使用燈光'],
     '違停': ['逆向臨停', '併排臨停', '路口停車', '網狀線臨停'],
     '逆向': ['逆向', '逆向臨停'],
@@ -70,21 +73,24 @@
     '其他': ['玩手機', '不停讓行人', '不依規定佩戴安全帽', '行駛人行道'],
   };
 
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const scrollToBottom = async (scrollTarget) => {
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const scrollToBottom = async (scrollTarget?: HTMLElement | Window) => {
+    // @ts-ignore
     (scrollTarget || window).scrollTo(0, (scrollTarget || document.body).scrollHeight);
     await sleep(200);
+    // @ts-ignore
     (scrollTarget || window).scrollTo(0, (scrollTarget || document.body).scrollHeight);
-  }
+  };
 
   async function guoDao() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/RV') {
       field.disclaimerRead = document.querySelector('#chkAgree');
       await sleep(200);
-      field.disclaimerRead.checked = true;
+      if (field.disclaimerRead) field.disclaimerRead.checked = true;
     } else if (urlPathName === '/RV/Create') {
       field.fullName = document.querySelector('input[name="ApplicantName"]');
       field.id = document.querySelector('input[name="ApplicantIDNo"]');
@@ -92,19 +98,17 @@
       field.addr = document.querySelector('input[name="ApplicantAddress"]');
       field.mail = document.querySelector('input[name="ApplicantEMail"]');
 
-      if (field) {
-        field.fullName.value = profile.fullName;
-        field.id.value = profile.id;
-        field.tel.value = profile.tel;
-        field.addr.value = profile.addr;
-        field.mail.value = profile.mail;
-      }
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   function gongluZongJu() {
     try {
-      let field = {};
+      let field: { [key: string]: HTMLInputElement | null } = {};
 
       const urlPathName = location.pathname;
       if (urlPathName === '/Message_CarViolation.aspx') {
@@ -112,9 +116,10 @@
         field.fullName = document.querySelector('#ContentPlaceHolder1_c_29');
         field.id = document.querySelector('#ContentPlaceHolder1_c_30');
         field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
-        const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode');
+        const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode') as HTMLInputElement;
 
-        document.querySelector('#ContentPlaceHolder1_c_33').value = '車牌刷白';
+        const violationType = document.querySelector('#ContentPlaceHolder1_c_33') as HTMLInputElement;
+        if (violationType) violationType.value = '車牌刷白';
         if (field.mail) field.mail.value = profile.mail;
         if (field.fullName) field.fullName.value = profile.fullName;
         if (field.id) field.id.value = profile.id;
@@ -126,16 +131,18 @@
           localStorage.setItem('verifyCode', verifyCodeInput.value);
         });
       }
-    } catch (err) { console.warn(err) }
+    } catch (err) {
+      console.warn(err);
+    }
   }
 
   function wuZeChe() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/case/Step0.aspx') {
       field.disclaimerRead = document.querySelector('#ctl00_cphBody_rblIsAgree_0');
-      field.disclaimerRead.click();
+      if (field.disclaimerRead) field.disclaimerRead.click();
       scrollToBottom();
     } else if (urlPathName === '/case/Step1.aspx') {
       field.fullName = document.querySelector('input#ctl00_cphBody_tbxAppName');
@@ -144,25 +151,25 @@
       field.addr = document.querySelector('input#ctl00_cphBody_tbxAppAdd');
       field.mail = document.querySelector('input#ctl00_cphBody_tbxAppEmail');
 
-      if (field) {
-        field.fullName.value = profile.fullName;
-        field.id.value = profile.id;
-        field.tel.value = profile.tel;
-        field.addr.value = profile.addr;
-        field.mail.value = profile.mail;
-      }
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   function jiLong() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/reportcase/index.aspx') {
       field.disclaimerRead = document.querySelector('#CheckBox1');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+      }
       scrollToBottom();
     } else if (urlPathName === '/reportcase/ReportIndex.aspx') {
       field.fullName = document.querySelector('#ReportName');
@@ -171,23 +178,25 @@
       field.addr = document.querySelector('#ReportAddress');
       field.mail = document.querySelector('#ReportEmail');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   async function xinBei() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/Home/Report') {
       field.disclaimerRead = document.querySelector('#ck');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+      }
       scrollToBottom();
     } else if (urlPathName === '/Home/Report_Add') {
       field.fullName = document.querySelector('#informerData_informer_name');
@@ -196,16 +205,17 @@
       field.addr = document.querySelector('#informerData_contact_address');
       field.mail = document.querySelector('#informerData_Email');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
+
   function taiBei() {
     window.addEventListener('load', async function () {
-      let field = {};
+      let field: { [key: string]: HTMLInputElement | null } = {};
 
       const urlPathName = location.hash;
       if (['#', '#/'].some(_ => _ === urlPathName)) {
@@ -217,26 +227,24 @@
         field.addr = document.querySelector('input[name="sPubadd"]');
         field.mail = document.querySelector('input[name="email"]');
 
-        if (field) {
-          field.fullName.value = profile.fullName;
-          field.id.value = profile.id;
-          field.tel.value = profile.tel;
-          field.addr.value = profile.addr;
-          field.mail.value = profile.mail;
-        }
+        if (field.fullName) field.fullName.value = profile.fullName;
+        if (field.id) field.id.value = profile.id;
+        if (field.tel) field.tel.value = profile.tel;
+        if (field.addr) field.addr.value = profile.addr;
+        if (field.mail) field.mail.value = profile.mail;
       }
     }, false);
   }
 
   function taoYuan() {
     window.addEventListener('load', function () {
-      let field = {};
+      let field: { [key: string]: HTMLInputElement | null } = {};
 
       const urlPathName = location.pathname;
       if (urlPathName == '/') {
         field.disclaimerRead = document.querySelector('#cbox1');
-        field.disclaimerRead.checked = true;
-        scrollToBottom(document.querySelector('.main-page'));
+        if (field.disclaimerRead) field.disclaimerRead.checked = true;
+        scrollToBottom(document.querySelector('.main-page') as HTMLElement);
       } else if (urlPathName === '/TTPB/D0101') {
         field.fullName = document.querySelector('input[name="txtName"]');
         field.id = document.querySelector('input[name="txtId"]');
@@ -244,26 +252,26 @@
         field.addr = document.querySelector('input[name="txtAdd"]');
         field.mail = document.querySelector('input[name="txtEmaill"]');
 
-        if (field) {
-          field.fullName.value = profile.fullName;
-          field.id.value = profile.id;
-          field.tel.value = profile.tel;
-          field.addr.value = profile.addr;
-          field.mail.value = profile.mail;
-        }
+        if (field.fullName) field.fullName.value = profile.fullName;
+        if (field.id) field.id.value = profile.id;
+        if (field.tel) field.tel.value = profile.tel;
+        if (field.addr) field.addr.value = profile.addr;
+        if (field.mail) field.mail.value = profile.mail;
       }
     }, false);
   }
 
   function xinZhuXian() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/10/13') {
       field.disclaimerRead = document.querySelector('.agree>input');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+      }
       scrollToBottom();
     } else if (urlPathName === '/report') {
       field.fullName = document.querySelector('#name');
@@ -272,23 +280,25 @@
       field.addr = document.querySelector('#address2');
       field.mail = document.querySelector('#email');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   function xinZhuShi() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/hsin/cases/statement') {
       field.disclaimerRead = document.querySelector('#has_read');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+      }
       scrollToBottom();
     } else if (urlPathName === '/hsin/cases/new') {
       field.fullName = document.querySelector('#case_name');
@@ -297,43 +307,42 @@
       field.addr = document.querySelector('#case_contact_address');
       field.mail = document.querySelector('#case_email');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
 
+      // @ts-ignore
       waitForKeyElements("[aria-labelledby=select2-case_violated_at_date-container]", () => {
         field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_date-container]');
-        field.dateTime.parentNode.parentNode.style.width = '10em';
+        if (field.dateTime) (field.dateTime.parentNode?.parentNode as HTMLElement)?.style.setProperty('width', '10em');
         field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_hour-container]');
-        field.dateTime.parentNode.parentNode.style.width = '6em';
+        if (field.dateTime) (field.dateTime.parentNode?.parentNode as HTMLElement)?.style.setProperty('width', '6em');
         field.dateTime = document.querySelector('[aria-labelledby=select2-case_violated_at_min-container]');
-        field.dateTime.parentNode.parentNode.style.width = '6em';
+        if (field.dateTime) (field.dateTime.parentNode?.parentNode as HTMLElement)?.style.setProperty('width', '6em');
       });
 
       // 客製化車牌輸入，可以直接輸入整串
-      document.querySelector('#case_first_car_number').parentNode.style?.setProperty('display', 'none');
-      document.querySelector('#case_last_car_number').parentNode.style?.setProperty('display', 'none');
+      (document.querySelector('#case_first_car_number')?.parentNode as HTMLElement)?.style.setProperty('display', 'none');
+      (document.querySelector('#case_last_car_number')?.parentNode as HTMLElement)?.style.setProperty('display', 'none');
       const customLicenseInput = document.createElement('input');
       customLicenseInput.setAttribute('placeholder', '完整車牌，包含-');
       customLicenseInput.style.setProperty('display', 'block');
       customLicenseInput.style.setProperty('width', 'calc(80%)');
-      document.querySelector('#case_first_car_number')
-        .parentNode.parentNode
-        .insertBefore(customLicenseInput, document.querySelector('#case_first_car_number').parentNode);
+      document.querySelector('#case_first_car_number')?.parentNode?.parentNode?.insertBefore(customLicenseInput, document.querySelector('#case_first_car_number')?.parentNode);
       customLicenseInput.oninput = (() => {
-        const licenseInputL = document.querySelector('#case_first_car_number');
-        const licenseInputR = document.querySelector('#case_last_car_number');
+        const licenseInputL = document.querySelector('#case_first_car_number') as HTMLInputElement;
+        const licenseInputR = document.querySelector('#case_last_car_number') as HTMLInputElement;
         const [licenseNumL, licenseNumR] = customLicenseInput.value.split('-');
-        licenseInputL.value = licenseNumL || '';
-        licenseInputR.value = licenseNumR || '';
+        if (licenseInputL) licenseInputL.value = licenseNumL || '';
+        if (licenseInputR) licenseInputR.value = licenseNumR || '';
       });
     }
   }
 
   function miaoLi() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/Home/Report') {
@@ -343,30 +352,33 @@
       field.addr = document.querySelector('#Address');
       field.mail = document.querySelector('#Email');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   function taichung() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/traffic/' || urlPathName === '/traffic/index.jsp') {
       field.disclaimerRead = document.querySelector('#OK');
 
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
-      scrollToBottom();
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+        scrollToBottom();
+      }
     } else if (urlPathName === '/traffic/traffic_write.jsp') {
       const timepickerUnlock = () => {
         field.timepicker = document.querySelector('.ui_tpicker_time_input');
-        field.timepicker.removeAttribute('disabled');
+        if (field.timepicker) field.timepicker.removeAttribute('disabled');
       }
+      // @ts-ignore
       waitForKeyElements(".ui_tpicker_time_input", timepickerUnlock);
 
       field.fullName = document.querySelector('#name');
@@ -381,49 +393,50 @@
       field.dateTime = document.querySelector('#violationdatetime');
       field.detail = document.querySelector('#detailcontent');
 
-      field.fullName.value = profile.fullName;
-      if (profile.gender === GENDER.FEMALE) field.genderFemale.click();
-      else if (profile.gender === GENDER.MALE) field.genderMale.click();
-      field.nation.click();
-      field.id.value = profile.id;
-      field.addr.value = profile.addr;
-      field.tel.value = profile.tel;
-      field.mail.value = profile.mail;
-      field.dateTime.removeAttribute('readonly');
-      // 依下拉選單自動填入描述
-      field.actSelect.onchange = () => {
-        field.detail.value = field.actSelect.value.replace(/^道交[\d-、之第項]+/gi, '');
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (profile.gender === GENDER.FEMALE && field.genderFemale) field.genderFemale.click();
+      else if (profile.gender === GENDER.MALE && field.genderMale) field.genderMale.click();
+      if (field.nation) field.nation.click();
+      if (field.id) field.id.value = profile.id;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.mail) field.mail.value = profile.mail;
+      if (field.dateTime) field.dateTime.removeAttribute('readonly');
+      if (field.actSelect) {
+        field.actSelect.onchange = () => {
+          if (field.detail) field.detail.value = field.actSelect.value.replace(/^道交[\d-、之第項]+/gi, '');
+        }
       }
-      // 客製化車牌輸入，可以直接輸入整串
-      document.querySelectorAll('#license1>*').forEach(elm => elm.style?.setProperty('display', 'none'));
+      document.querySelectorAll<HTMLElement>('#license1>*').forEach(elm => elm.style?.setProperty('display', 'none'));
       const customLicenseInput = document.createElement('input');
       customLicenseInput.setAttribute('placeholder', '完整車牌，包含-');
       customLicenseInput.style.setProperty('display', 'block');
       customLicenseInput.style.setProperty('width', 'calc(80% - 7px)');
-      document.querySelector('#license1').insertBefore(customLicenseInput, document.querySelector('#license1 label'));
+      document.querySelector('#license1')?.insertBefore(customLicenseInput, document.querySelector('#license1 label'));
       customLicenseInput.oninput = (() => {
-        const licenseInputL = document.querySelector('#licensenumber2');
-        const licenseInputR = document.querySelector('#licensenumber3');
+        const licenseInputL = document.querySelector('#licensenumber2') as HTMLInputElement;
+        const licenseInputR = document.querySelector('#licensenumber3') as HTMLInputElement;
         const [licenseNumL, licenseNumR] = customLicenseInput.value.split('-');
-        licenseInputL.value = licenseNumL || '';
-        licenseInputR.value = licenseNumR || '';
+        if (licenseInputL) licenseInputL.value = licenseNumL || '';
+        if (licenseInputR) licenseInputR.value = licenseNumR || '';
       });
 
-      // 防止右鍵菜單的預設行為
-      field.detail.addEventListener('contextmenu', function (event) {
-        event.preventDefault();
-        createContextMenu(event.pageX, event.pageY, menuOptions, null);
-      });
+      if (field.detail) {
+        field.detail.addEventListener('contextmenu', function (event) {
+          event.preventDefault();
+          createContextMenu(event.pageX, event.pageY, menuOptions);
+        });
+      }
     }
   }
 
   function nanTou() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/sc11/rwd/rincase1.aspx') {
       field.nextBtn = document.querySelector('#Button1');
-      field.nextBtn.click();
+      if (field.nextBtn) field.nextBtn.click();
     } else if (urlPathName === '/sc11/rwd/rincase2.aspx') {
       scrollToBottom();
     } else if (urlPathName === '/sc11/rwd/rincase3.aspx') {
@@ -435,23 +448,23 @@
       field.actSelect = document.querySelector('#rlid');
       field.detail = document.querySelector('#mcarblack');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
-      // 依下拉選單自動填入描述
-      field.actSelect.onchange = () => {
-        // 連續的option可能是同一條
-        const option = field.actSelect.querySelectorAll(`option[value='${field.actSelect.value}']`);
-        const content = [...option].map(elm => elm.textContent).join('');
-        field.detail.value = content.replace(/^[\d-、之第條項款]+/gi, '').replace(/\([\d-、之第條項款]+\)$/gi, '');
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
+      if (field.actSelect) {
+        field.actSelect.onchange = () => {
+          const option = Array.from(field.actSelect?.querySelectorAll<HTMLElement>(`option[value='${field.actSelect.value}']`));
+          const content = [...option].map(elm => elm.textContent).join('');
+          if (field.detail) field.detail.value = content.replace(/^[\d-、之第條項款]+/gi, '').replace(/\([\d-、之第條項款]+\)$/gi, '');
+        }
       }
     }
   }
 
   function zhanghua() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/ViolatePetition/C005400') {
@@ -465,20 +478,24 @@
       field.date = document.querySelector('#ViolationDate');
       field.time = document.querySelector('#ViolationTime');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
-      field.date.setAttribute('type', 'text');
-      field.date.setAttribute('placeholder', 'YYYY-mm-dd');
-      field.time.setAttribute('type', 'text');
-      field.time.setAttribute('placeholder', 'HH:mm');
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
+      if (field.date) {
+        field.date.setAttribute('type', 'text');
+        field.date.setAttribute('placeholder', 'YYYY-mm-dd');
+      }
+      if (field.time) {
+        field.time.setAttribute('type', 'text');
+        field.time.setAttribute('placeholder', 'HH:mm');
+      }
     }
   }
 
   function yunLin() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/Home/Report') {
@@ -488,35 +505,43 @@
       field.addr = document.querySelector('#Address');
       field.mail = document.querySelector('#Email');
       field.date = document.querySelector('[name=SetDateOfOccurrence]');
-      field.time = document.querySelector('[name=SetTimeOfOccurrence');
+      field.time = document.querySelector('[name=SetTimeOfOccurrence]');
 
       field.disclaimerRead = document.querySelector('#che_agree');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+      }
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
-      field.date.setAttribute('type', 'text');
-      field.date.setAttribute('placeholder', 'YYYY-mm-dd');
-      field.time.setAttribute('type', 'text');
-      field.time.setAttribute('placeholder', 'HH:mm');
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
+      if (field.date) {
+        field.date.setAttribute('type', 'text');
+        field.date.setAttribute('placeholder', 'YYYY-mm-dd');
+      }
+      if (field.time) {
+        field.time.setAttribute('type', 'text');
+        field.time.setAttribute('placeholder', 'HH:mm');
+      }
     }
   }
 
   function jiaYiXian() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName.startsWith('TrafficMailbox/Index')) {
       field.disclaimerRead = document.querySelector('#checkRead');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
-      scrollToBottom();
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+        scrollToBottom();
+      }
     } else if (urlPathName.startsWith('/TrafficMailbox/Create')) {
       field.fullName = document.querySelector('#FromName');
       field.id = document.querySelector('#FromID');
@@ -524,11 +549,11 @@
       field.addr = document.querySelector('#ContactAddress');
       field.mail = document.querySelector('#FromMail');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
@@ -537,15 +562,17 @@
   }
 
   function taiNan() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName.startsWith('TrafficMailbox/Index')) {
       field.disclaimerRead = document.querySelector('#checkRead');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
-      scrollToBottom();
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+        scrollToBottom();
+      }
     } else if (urlPathName.startsWith('/TrafficMailbox/Create')) {
       field.fullName = document.querySelector('#Name');
       field.id = document.querySelector('#Pid');
@@ -553,24 +580,26 @@
       field.addr = document.querySelector('#Address');
       field.mail = document.querySelector('#Email');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   function pingDong() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName === '/') {
       field.disclaimerRead = document.querySelector('#OK');
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
-      scrollToBottom();
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+        scrollToBottom();
+      }
     } else if (urlPathName === '/traffic_write.jsp') {
       field.fullName = document.querySelector('#name');
       field.id = document.querySelector('#sub');
@@ -582,40 +611,42 @@
       field.detail = document.querySelector('#detailcontent');
       field.disclaimerRead = document.querySelector('#isagree');
 
-      field.disclaimerRead.click();
-      field.disclaimerRead.click();
-      field.disclaimerRead.checked = true;
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
-      field.dateTime.removeAttribute('readonly');
-      // 依下拉選單自動填入描述
-      field.actSelect.onchange = () => {
-        field.detail.value = field.actSelect.value;
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
       }
-      // 客製化車牌輸入，可以直接輸入整串
-      document.querySelector('#licensenumber1').style.setProperty('display', 'none');
-      document.querySelector('#licensenumber2').style.setProperty('display', 'none');
-      document.querySelector('.carnum span').style.setProperty('display', 'none');
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
+      if (field.dateTime) field.dateTime.removeAttribute('readonly');
+      if (field.actSelect) {
+        field.actSelect.onchange = () => {
+          if (field.detail) field.detail.value = field.actSelect.value;
+        }
+      }
+      document.querySelector<HTMLElement>('#licensenumber1')?.style.setProperty('display', 'none');
+      document.querySelector<HTMLElement>('#licensenumber2')?.style.setProperty('display', 'none');
+      document.querySelector<HTMLElement>('.carnum span')?.style.setProperty('display', 'none');
       const customLicenseInput = document.createElement('input');
       customLicenseInput.setAttribute('placeholder', '完整車牌，包含-');
       customLicenseInput.style.setProperty('display', 'block');
       customLicenseInput.style.setProperty('width', 'calc(80% - 7px)');
-      document.querySelector('.carnum').insertBefore(customLicenseInput, document.querySelector('#licensenumber1 label'));
+      document.querySelector('.carnum')?.insertBefore(customLicenseInput, document.querySelector('#licensenumber1 label'));
       customLicenseInput.oninput = (() => {
-        const licenseInputL = document.querySelector('#licensenumber1');
-        const licenseInputR = document.querySelector('#licensenumber2');
+        const licenseInputL = document.querySelector('#licensenumber1') as HTMLInputElement;
+        const licenseInputR = document.querySelector('#licensenumber2') as HTMLInputElement;
         const [licenseNumL, licenseNumR] = customLicenseInput.value.split('-');
-        licenseInputL.value = licenseNumL || '';
-        licenseInputR.value = licenseNumR || '';
+        if (licenseInputL) licenseInputL.value = licenseNumL || '';
+        if (licenseInputR) licenseInputR.value = licenseNumR || '';
       });
     }
   }
 
   function yiLan() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName.startsWith('/index.php')) {
@@ -625,35 +656,35 @@
       field.addr = document.querySelector('#address2');
       field.mail = document.querySelector('#email');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   function huaLian() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName.startsWith('/order/iframviolation_list.php')) {
       field.fullName = document.querySelector('[name=name]');
-      field.id = document.querySelectorAll('#mform>.input-group>input')[1];
+      field.id = document.querySelectorAll('#mform>.input-group>input')[1] as HTMLInputElement;
       field.tel = document.querySelector('[name=mobile]');
       field.addr = document.querySelector('[name=address]');
       field.mail = document.querySelector('[name=email]');
 
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
 
   function taiDong() {
-    let field = {};
+    let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
     if (urlPathName.startsWith('/chinese/home.jsp')) {
@@ -665,17 +696,16 @@
       field.genderMale = document.querySelector('#sex1');
       field.genderFemale = document.querySelector('#sex2');
 
-      if (profile.gender === GENDER.FEMALE) field.genderFemale.click();
-      else if (profile.gender === GENDER.MALE) field.genderMale.click();
-      field.fullName.value = profile.fullName;
-      field.id.value = profile.id;
-      field.tel.value = profile.tel;
-      field.addr.value = profile.addr;
-      field.mail.value = profile.mail;
+      if (profile.gender === GENDER.FEMALE && field.genderFemale) field.genderFemale.click();
+      else if (profile.gender === GENDER.MALE && field.genderMale) field.genderMale.click();
+      if (field.fullName) field.fullName.value = profile.fullName;
+      if (field.id) field.id.value = profile.id;
+      if (field.tel) field.tel.value = profile.tel;
+      if (field.addr) field.addr.value = profile.addr;
+      if (field.mail) field.mail.value = profile.mail;
     }
   }
-
-  function createContextMenu(x, y, options) {
+  function createContextMenu(x: number, y: number, options: { [key: string]: any }) {
     removeExistingMenu();
 
     const menu = document.createElement('div');
@@ -686,7 +716,7 @@
     menu.style.backgroundColor = 'white';
     menu.style.border = '1px solid black';
     menu.style.padding = '10px';
-    menu.style.zIndex = 1000; // 確保菜單顯示在最上層
+    menu.style.zIndex = '1000';
 
     for (const key in options) {
       const item = document.createElement('div');
@@ -695,7 +725,7 @@
       item.style.cursor = 'pointer';
 
       item.addEventListener('click', function (event) {
-        event.stopPropagation(); // 防止触发外层的点击事件
+        event.stopPropagation();
         createSubmenu(
           +getComputedStyle(menu).getPropertyValue('width').replace('px', '') + x,
           y,
@@ -707,7 +737,7 @@
     document.body.appendChild(menu);
   }
 
-  function createSubmenu(x, y, options) {
+  function createSubmenu(x: number, y: number, options: string[]) {
     removeExistingMenu('submenu');
 
     const submenu = document.createElement('div');
@@ -718,7 +748,7 @@
     submenu.style.backgroundColor = 'white';
     submenu.style.border = '1px solid black';
     submenu.style.padding = '10px';
-    submenu.style.zIndex = 1000;
+    submenu.style.zIndex = '1000';
 
     options.forEach(option => {
       const item = document.createElement('div');
@@ -750,8 +780,8 @@
     }
   }
 
-  function fillTextArea(text) {
-    const textArea = document.getElementById('detailcontent');
+  function fillTextArea(text: string) {
+    const textArea = document.querySelector<HTMLTextAreaElement>('#detailcontent');
     if (textArea) {
       textArea.value = text;
     }

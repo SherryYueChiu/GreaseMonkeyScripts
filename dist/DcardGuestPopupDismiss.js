@@ -16,28 +16,25 @@
 // @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           none
 // ==/UserScript==
-
 (function () {
-  'use strict';
-  /** login reqquest popup
-   * @type HTMLElement */
-  var $loginRequestPopup;
-
-  /** dismiss the popup and break the scrolling restriction */
-  var breakRestriction = () => {
-    // hide login reqquest popup
-    $loginRequestPopup.style.display = "none";
-    // unlock scrolling restriction
-    document.body.style.overflow = "auto";
-  }
-
-  let observer = new MutationObserver((mutations, obs) => {
-    $loginRequestPopup = document.querySelector(".__portal>*");
-    if ($loginRequestPopup) breakRestriction();
-  });
-
-  observer.observe(document.querySelector(".__portal"), {
-    childList: true,
-    subtree: true
-  });
+    'use strict';
+    /** login reqquest popup
+     * @type HTMLElement */
+    var $loginRequestPopup;
+    /** dismiss the popup and break the scrolling restriction */
+    var breakRestriction = () => {
+        // hide login reqquest popup
+        $loginRequestPopup.style.display = "none";
+        // unlock scrolling restriction
+        document.body.style.overflow = "auto";
+    };
+    let observer = new MutationObserver((mutations, obs) => {
+        $loginRequestPopup = document.querySelector(".__portal>*");
+        if ($loginRequestPopup)
+            breakRestriction();
+    });
+    observer.observe(document.querySelector(".__portal"), {
+        childList: true,
+        subtree: true
+    });
 })();

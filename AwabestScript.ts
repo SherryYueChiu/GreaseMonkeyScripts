@@ -23,7 +23,7 @@
 	 * @param {string} elmSelector - query selector
 	 * @return {boolean} is found
 	 */
-	let waitElmAppear = async (elmSelector) => {
+	let waitElmAppear = async (elmSelector: string) => {
 		return new Promise(resolve => {
 			// tracking every 250ms
 			var tracker = setInterval(() => {
@@ -37,10 +37,10 @@
 
 	let runSignInMission = async () => {
 		let res = await waitElmAppear('#fwin_sign .layer_dcsignin li');
-		let emojis = document.querySelectorAll('#fwin_sign .layer_dcsignin li');
+		let emojis = document.querySelectorAll<HTMLElement>('#fwin_sign .layer_dcsignin li');
 		emojis[2].click();
 		res = await waitElmAppear('#fwin_sign button[type="submit"]');
-		let submitBtn = document.querySelector('#fwin_sign button[type="submit"]');
+		let submitBtn = document.querySelector<HTMLElement>('#fwin_sign button[type="submit"]');
 		submitBtn.click();
 		console.log("Awabest sign-in mission finished.")
 	}
@@ -50,10 +50,10 @@
 	let isSigned = signInBtn.getAttribute("style").indexOf("signin_yes") != -1;
 
 	if (!isSigned) {
-		showWindow('sign', 'plugin.php?id=awa_signin:sign');
+		(window as any).showWindow('sign', 'plugin.php?id=awa_signin:sign');
 		// hide module window
 		let res = await waitElmAppear('#fwin_sign');
-		document.querySelector('#fwin_sign').style.opacity = 0;
+		document.querySelector<HTMLElement>('#fwin_sign').style.opacity = '0';
 		runSignInMission();
 	}
 })();

@@ -18,57 +18,59 @@
 // @grant           GM_addStyle
 // ==/UserScript==
 
+interface CIVariables {
+  [key: string]: string;
+}
+
 (function () {
-  var variableStartLine = 0, variableEndLine = 0;
-  var CI_variables = {};
-  var isRaw = false;
+  let variableStartLine = 0, variableEndLine = 0;
+  const CI_variables: CIVariables = {};
+  let isRaw = false;
 
-  function translateCIVariable(key) {
-    if (key === 'DEPLOY') {
-      let env = '';
-      if (CI_variables[key].startsWith('PROD')) env = '正式站';
-      else if (CI_variables[key].startsWith('RTM')) env = 'RTM';
-      else if (CI_variables[key] === 'QA') env = '測試站';
-      else if (CI_variables[key] === 'RD') env = '開發站';
-      else env = CI_variables[key];
-      return ['環境', env];
-    } else if (key === 'NAMESPACE') {
-      let country = '';
-      if (CI_variables[key].endsWith('thb')) country = '泰國';
-      else if (CI_variables[key].endsWith('php')) country = '菲律賓';
+  function translateCIVariable(key: string): [string | null, string | null] {
+    switch (key) {
+      case 'DEPLOY':
+        let env = '';
+        if (CI_variables[key].startsWith('PROD')) env = '正式站';
+        else if (CI_variables[key].startsWith('RTM')) env = 'RTM';
+        else if (CI_variables[key] === 'QA') env = '測試站';
+        else if (CI_variables[key] === 'RD') env = '開發站';
+        else env = CI_variables[key] as string;
+        return ['環境', env];
+      case 'NAMESPACE':
+        let country = '';
+        if (CI_variables[key].endsWith('thb')) country = '泰國';
+        else if (CI_variables[key].endsWith('php')) country = '菲律賓';
 
-      if (CI_variables['DEPLOY'].endsWith('TH')) country = '泰國';
-      else if (CI_variables['DEPLOY'].endsWith('PHP')) country = '菲律賓';
+        if ((CI_variables['DEPLOY'] as string).endsWith('TH')) country = '泰國';
+        else if ((CI_variables['DEPLOY'] as string).endsWith('PHP')) country = '菲律賓';
 
-      if (!country) country = '緬甸';
-      return ['市場', country];
-    } else if (key === 'NO_HOTUPDATE') {
-      let icon = '';
-      if (CI_variables[key] === 'true') icon = '❌'
-      else icon = '✅'
-      return ['熱更新', icon];
-    } else if (key === 'COMMIT BRANCH') {
-      let isLongString = CI_variables[key].length > 11;
-      let marquee = `<marquee scrolldelay="90" scrollamount="2">${CI_variables[key]}</marquee>`;
-      return ['分支', isLongString ? marquee : CI_variables[key]];
-    } else if (key === 'COMMIT SHORT SHA') {
-      return ['COMMIT SHA', CI_variables[key]];
-    } else if (key === 'BUILD_FAILED') {
-      let icon = '';
-      if (CI_variables[key] === true) icon = '❌'
-      else icon = '✅'
-      return ['任務完成', icon];
-    } else {
-      return [null, null];
+        if (!country) country = '緬甸';
+        return ['市場', country];
+      case 'NO_HOTUPDATE':
+        let icon = CI_variables[key] === 'true' ? '❌' : '✅';
+        return ['熱更新', icon];
+      case 'COMMIT BRANCH':
+        let isLongString = (CI_variables[key] as string).length > 11;
+        let marquee = `<marquee scrolldelay="90" scrollamount="2">${CI_variables[key]}</marquee>`;
+        return ['分支', isLongString ? marquee : CI_variables[key] as string];
+      case 'COMMIT SHORT SHA':
+        return ['COMMIT SHA', CI_variables[key] as string];
+      case 'BUILD_FAILED':
+        let buildIcon = CI_variables[key] === 'true' ? '❌' : '✅';
+        return ['任務完成', buildIcon];
+      default:
+        return [null, null];
     }
   }
 
-  function injectPanel(el) {
-    if (document.querySelector('#yue_console')) {
-      document.querySelector('#yue_console').innerHTML = '';
+  function injectPanel(el: HTMLElement) {
+    const existingPanel = document.querySelector('#yue_console');
+    if (existingPanel) {
+      existingPanel.innerHTML = '';
     }
 
-    let html = `
+    const html = `
 <div id="yue_console"></div>
 <style>
 #yue_console {
@@ -112,41 +114,42 @@
     if (el.insertAdjacentHTML) {
       el.insertAdjacentHTML("beforebegin", html);
     } else {
-      let range = document.createRange();
-      let frag = range.createContextualFragment(html);
-      el.parentNode.insertBefore(frag, el);
+      const range = document.createRange();
+      const frag = range.createContextualFragment(html);
+      el.parentNode?.insertBefore(frag, el);
     }
-    let panel = document.querySelector('#yue_console');
-    for (let key in CI_variables) {
-      let $line = document.createElement("div");
+
+    const panel = document.querySelector('#yue_console') as HTMLElement;
+    for (const key in CI_variables) {
+      const $line = document.createElement("div");
       $line.className = 'line';
 
-      let [_key, _val] = translateCIVariable(key);
+      const [_key, _val] = translateCIVariable(key);
       if (_key === null) continue;
-      let $key = document.createElement("div");
+      const $key = document.createElement("div");
       $key.className = 'key';
       $key.innerText = _key;
-      let $val = document.createElement("div");
+      const $val = document.createElement("div");
       $val.className = 'val';
-      $val.innerHTML = _val;
+      $val.innerHTML = _val as string;
       $line.appendChild($key);
       $line.appendChild($val);
       panel.appendChild($line);
       setTimeout(() => {
-        panel.style.opacity = 1;
+        panel.style.opacity = '1';
         panel.style.top = `calc(100% - ${2 * Object.keys(CI_variables).length + 1}em)`;
       }, 10);
     }
-    // log過多，此頁未載明，需要開啟raw log
+
     if (Object.keys(CI_variables).length === 1 || Object.keys(CI_variables).length === 2) {
-      let $line = document.createElement("div");
+      const $line = document.createElement("div");
       $line.className = 'line';
-      let $key = document.createElement("div");
+      const $key = document.createElement("div");
       $key.className = 'key';
       $key.innerText = '需要開啟raw';
-      let $val = document.createElement("div");
+      const $val = document.createElement("div");
       $val.className = 'val';
-      let $link = document.createElement("a");
+      const $link = document.createElement("a");
       $link.innerHTML = '點擊前往';
       $link.href = window.location.href + '/raw';
       $link.style.color = 'black';
@@ -155,7 +158,7 @@
       $line.appendChild($val);
       panel.appendChild($line);
       setTimeout(() => {
-        panel.style.opacity = 1;
+        panel.style.opacity = '1';
         panel.style.top = `calc(100% - ${2 * Object.keys(CI_variables).length + 5}em)`;
       }, 10);
     }
@@ -166,67 +169,68 @@
       !document.querySelector('.build-trace-container>code') &&
       !document.querySelector('body>pre')
     ) return;
-    // find whoami and variables below
-    let fullLog;
+
+    let fullLog: NodeListOf<HTMLElement> | string[];
     if (isRaw === true) {
-      fullLog = document.querySelector('body>pre').innerHTML.split('\n');
+      fullLog = (document.querySelector('body>pre') as HTMLElement).innerHTML.split('\n');
     } else {
       fullLog = document.querySelectorAll('.build-trace-container>code .js-line.log-line');
     }
+
     for (let i = 0; i < fullLog.length; i++) {
-      let lineTxt;
+      let lineTxt: string;
       if (isRaw === true) {
-        lineTxt = fullLog[i];
+        lineTxt = fullLog[i] as string;
       } else {
-        lineTxt = fullLog[i].querySelector('span').innerText
+        lineTxt = (fullLog[i] as HTMLElement).querySelector<HTMLElement>('span').innerText;
       }
-      if (lineTxt.indexOf('whoami') != -1) {
+      if (lineTxt.indexOf('whoami') !== -1) {
         variableStartLine = i + 2;
         break;
       }
     }
-    // parse
+
     for (let i = variableStartLine; i < fullLog.length; i++) {
-      let lineTxt;
+      let lineTxt: string;
       if (isRaw === true) {
-        lineTxt = fullLog[i];
+        lineTxt = fullLog[i] as string;
       } else {
-        lineTxt = fullLog[i].querySelector('span').innerText;
+        lineTxt = (fullLog[i] as HTMLElement).querySelector('span').innerText;
       }
-      let lineAnaylze = lineTxt.match(/(.+)\: (.*)/);
-      if (lineAnaylze != null) {
-        let key = lineAnaylze[1];
-        let val = lineAnaylze[2];
+      const lineAnalyze = lineTxt.match(/(.+)\: (.*)/);
+      if (lineAnalyze != null) {
+        const key = lineAnalyze[1];
+        const val = lineAnalyze[2];
         CI_variables[key] = val;
       } else {
         variableEndLine = i;
         break;
       }
     }
-    // succeeded or failed
-    let lastLine;
+
+    let lastLine: string;
     if (isRaw === true) {
-      lastLine = fullLog[fullLog.length - 1];
+      lastLine = fullLog[fullLog.length - 1] as string;
     } else {
-      lastLine = fullLog[fullLog.length - 1].querySelector('span').innerText;
+      lastLine = (fullLog[fullLog.length - 1] as HTMLElement).querySelector('span').innerText;
     }
-    if (lastLine.indexOf('Job failed') != -1) {
-      CI_variables.BUILD_FAILED = true;
-    } else if (lastLine.indexOf('Job succeeded') != -1) {
-      CI_variables.BUILD_FAILED = false;
+    if (lastLine.indexOf('Job failed') !== -1) {
+      CI_variables.BUILD_FAILED = 'true';
+    } else if (lastLine.indexOf('Job succeeded') !== -1) {
+      CI_variables.BUILD_FAILED = 'false';
     }
 
     injectPanel(document.body);
-    $("#yue_console").draggable();
+    ($("#yue_console") as any).draggable();
   }
 
-  let observer = new MutationObserver((mutations, obs) => {
+  const observer = new MutationObserver((mutations, obs) => {
     if (!document.querySelector(".build-trace-container>code .js-line.log-line")) return;
     main();
     observer.disconnect();
   });
 
-  observer.observe(document.querySelector("body"), {
+  observer.observe(document.querySelector("body") as Node, {
     childList: true,
     subtree: true
   });

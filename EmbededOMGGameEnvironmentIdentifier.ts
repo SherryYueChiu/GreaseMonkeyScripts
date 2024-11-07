@@ -24,7 +24,7 @@
 (function () {
 
   // 動態載入 CSS 的函式
-  function loadCSS(url) {
+  function loadCSS(url:string) {
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
@@ -34,7 +34,8 @@
   loadCSS('https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css');
 
   // 顯示 toast 的函式
-  function showToast(message) {
+  function showToast(message:string) {
+    // @ts-ignore
     Toastify({
       text: message,
       duration: -1,
@@ -44,7 +45,7 @@
     }).showToast();
   }
 
-  function getEnvNameByUrlHost(urlHost) {
+  function getEnvNameByUrlHost(urlHost:string) {
     switch (urlHost) {
       case 'sm-dev.ssgaka.com':
         return 'DEV';

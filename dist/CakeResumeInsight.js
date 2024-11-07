@@ -16,43 +16,40 @@
 // @homepage        "https://github.com/sherryyuechiu/GreasyMonkeyScripts"
 // @grant           none
 // ==/UserScript==
-
 (function () {
-  'use strict';
-  // insight page
-  const class1 = 'c-viewer-card-blur';
-  const class2 = 'l-viewer-card-mask';
-  const class4 = "[class*='MessageChannelViewer_acceptance_']";
-  // messages page & message popup
-  const class3 = 'chat-connect-container';
-
-  let errorBlockObserver = new MutationObserver((mutations, obs) => {
-    const elm1 = document.querySelector(`.${class1}`);
-    if (elm1) {
-      document.querySelectorAll('.' + class1).forEach(elm => {
-        elm.classList.remove(class1);
-      });
-    }
-    const elm2 = document.querySelector(`.${class2}`);
-    if (elm2) {
-      document.querySelectorAll('.' + class2).forEach(elm => {
-        elm.classList.remove(class2);
-      });
-    }
-    const elm3 = document.querySelector(`.${class3}`);
-    if (elm3) {
-      document.querySelectorAll('.' + class3).forEach(elm => {
-        elm.classList.remove(class3);
-      });
-    }
-    const elm4 = document.querySelector(class4);
-    if (elm4) {
-      elm4.style.setProperty('background','none','important');
-    }
-  });
-
-  errorBlockObserver.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+    'use strict';
+    // insight page
+    const class1 = 'c-viewer-card-blur';
+    const class2 = 'l-viewer-card-mask';
+    const class4 = "[class*='MessageChannelViewer_acceptance_']";
+    // messages page & message popup
+    const class3 = 'chat-connect-container';
+    let errorBlockObserver = new MutationObserver((mutations, obs) => {
+        const elm1 = document.querySelector(`.${class1}`);
+        if (elm1) {
+            document.querySelectorAll('.' + class1).forEach(elm => {
+                elm.classList.remove(class1);
+            });
+        }
+        const elm2 = document.querySelector(`.${class2}`);
+        if (elm2) {
+            document.querySelectorAll('.' + class2).forEach(elm => {
+                elm.classList.remove(class2);
+            });
+        }
+        const elm3 = document.querySelector(`.${class3}`);
+        if (elm3) {
+            document.querySelectorAll('.' + class3).forEach(elm => {
+                elm.classList.remove(class3);
+            });
+        }
+        const elm4 = document.querySelector(class4);
+        if (elm4) {
+            elm4.style.setProperty('background', 'none', 'important');
+        }
+    });
+    errorBlockObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 })();

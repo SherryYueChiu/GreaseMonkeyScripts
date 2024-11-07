@@ -19,7 +19,7 @@
 // ==/UserScript==
 
 (function () {
-  let downloadImage = (url) => {
+  let downloadImage = (url:string) => {
     var a = document.createElement('a');
     a.href = url;
     a.download = url;
@@ -37,7 +37,7 @@
     });
   }
 
-  function observerFallBack(mutations, obs) {
+  function observerFallBack (mutations: MutationRecord[], obs: MutationObserver) {
     if (!document.querySelector(".FnStickerPreviewItem")) return;
     setTimeout(main, 250);
     observer.disconnect();

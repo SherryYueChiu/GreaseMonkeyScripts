@@ -23,8 +23,9 @@
 
 (function () {
   'use strict';
+  // @ts-ignore
   waitForKeyElements('ytd-enforcement-message-view-model', () => {
-    document.querySelector('ytd-enforcement-message-view-model').parentNode.parentNode.style.setProperty('display', 'none', 'important')
-    document.querySelector('tp-yt-iron-overlay-backdrop').style.setProperty('display', 'none', 'important')
-  })
+    (document.querySelector<HTMLElement>('ytd-enforcement-message-view-model').parentNode.parentNode as HTMLElement).style.setProperty('display', 'none', 'important');
+    document.querySelector<HTMLElement>('tp-yt-iron-overlay-backdrop').style.setProperty('display', 'none', 'important');
+  });
 })();

@@ -19,11 +19,11 @@
 // ==/UserScript==
 
 (function () {
-  const TGToken = '6029836287:AAGtY81VFypCB976DwfRG7hZ033oEHzBT1Y';
-  const chatId = 901947307;
-  let pipelineState = [];
-  let pipelineEverUpdate = [];
-  let prevUndoneAmount = -1, prevSuccessAmount = -1, prevFailedAmount = -1;
+  const TGToken: string = '6029836287:AAGtY81VFypCB976DwfRG7hZ033oEHzBT1Y';
+  const chatId: number = 901947307;
+  let pipelineState: { [key: string]: string } = {};
+  let pipelineEverUpdate: { [key: string]: boolean } = {};
+  let prevUndoneAmount: number = -1, prevSuccessAmount: number = -1, prevFailedAmount: number = -1;
 
   const PIPELINE_STATE = {
     PENDING: 'pending',
@@ -33,9 +33,9 @@
     PARTIAL_SUCCESS: 'success-with-warnings',
     PARTIAL_FAILED: 'failed-with-warnings',
     WAITING_RESOURCES: 'waiting-for-resource',
-  }
+  };
 
-  function judgeState(elm) {
+  function judgeState(elm: HTMLElement): string | undefined {
     const classList = elm.classList;
     if (classList.contains('ci-pending')) return PIPELINE_STATE.PENDING;
     if (classList.contains('ci-running')) return PIPELINE_STATE.RUNNING;
@@ -46,88 +46,80 @@
     if (classList.contains('ci-waiting-for-resource')) return PIPELINE_STATE.WAITING_RESOURCES;
   }
 
-  function getPipeLineId(elm) {
-    return elm.querySelector('.pipeline-tags [data-qa-selector="pipeline_url_link"]').innerText.trim();
+  function getPipeLineId(elm: HTMLElement): string {
+    return elm.querySelector<HTMLElement>('.pipeline-tags [data-qa-selector="pipeline_url_link"]')?.innerText.trim() || '';
   }
 
-  function sendNotification(msg) {
+  function sendNotification(msg: string): void {
     const searchParams = new URLSearchParams({
-      chat_id: chatId,
+      chat_id: chatId.toString(),
       parse_mode: 'MarkdownV2',
       text: msg,
     });
     const requestUrl = new URL(`https://api.telegram.org/bot${TGToken}/sendMessage`);
     requestUrl.search = searchParams.toString().replace(/%25/g, '%');
-    fetch(requestUrl);
+    fetch(requestUrl.toString());
   }
 
-  function isHTMLElement(obj) {
-    return obj?.nodeType == 1;
+  function isHTMLElement(obj: any): obj is HTMLElement {
+    return obj?.nodeType === 1;
   }
 
-  function main() {
+  function main(): void {
     const pipelines = document.querySelectorAll('.commit[data-testid=pipeline-table-row]');
     if (Object.keys(pipelineState).length === 0) {
-      pipelines.forEach((pipeline, i) => {
-        const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
-        pipelineState[getPipeLineId(pipeline)] = judgeState(statusTd);
-        pipelineEverUpdate[getPipeLineId(pipelines[i])] = false;
+      pipelines.forEach((pipeline) => {
+        const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]') as HTMLElement;
+        pipelineState[getPipeLineId(pipeline as HTMLElement)] = judgeState(statusTd) || '';
+        pipelineEverUpdate[getPipeLineId(pipeline as HTMLElement)] = false;
       });
       return;
     }
 
-    let diffPipelines = [];
-    for (let i = 0; i < pipelines.length; i++) {
-      if (!isHTMLElement(pipelines[i])) continue;
-      const statusTd = pipelines[i].querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
+    let diffPipelines: HTMLElement[] = [];
+    pipelines.forEach((pipeline) => {
+      if (!isHTMLElement(pipeline)) return;
+      const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]') as HTMLElement;
       if (statusTd) {
-        // 狀態沒變
-        if (pipelineState[getPipeLineId(pipelines[i])] === judgeState(statusTd)) {
-          continue;
+        if (pipelineState[getPipeLineId(pipeline)] === judgeState(statusTd)) {
+          return;
         }
-        console.log('changed', getPipeLineId(pipelines[i]), pipelineState[getPipeLineId(pipelines[i])], judgeState(statusTd))
-        // 狀態有變
-        diffPipelines.push(pipelines[i]);
+        console.log('changed', getPipeLineId(pipeline), pipelineState[getPipeLineId(pipeline)], judgeState(statusTd));
+        diffPipelines.push(pipeline as HTMLElement);
       }
-    }
+    });
     if (diffPipelines.length === 0) return;
 
     let successAmount = 0;
     let failedAmount = 0;
     let undoneAmount = 0;
-    for (let i = 0; i < pipelines.length; i++) {
-      const pipeline = pipelines[i];
-      const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
+    pipelines.forEach((pipeline) => {
+      const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]') as HTMLElement;
       if (statusTd) {
-        state = judgeState(statusTd);
+        const state = judgeState(statusTd);
         if (
           (state === PIPELINE_STATE.SUCCESS || state === PIPELINE_STATE.PARTIAL_SUCCESS) &&
-          pipelineEverUpdate[getPipeLineId(pipelines[i])] === true &&
-          pipelineState[getPipeLineId(pipelines[i])] !== judgeState(statusTd)
+          pipelineEverUpdate[getPipeLineId(pipeline as HTMLElement)] === true &&
+          pipelineState[getPipeLineId(pipeline as HTMLElement)] !== judgeState(statusTd)
         ) successAmount++;
         else if (
           (state === PIPELINE_STATE.FAILED || state === PIPELINE_STATE.PARTIAL_FAILED) &&
-          pipelineEverUpdate[getPipeLineId(pipelines[i])] === true &&
-          pipelineState[getPipeLineId(pipelines[i])] !== judgeState(statusTd)
+          pipelineEverUpdate[getPipeLineId(pipeline as HTMLElement)] === true &&
+          pipelineState[getPipeLineId(pipeline as HTMLElement)] !== judgeState(statusTd)
         ) failedAmount++;
         else if (
           (state === PIPELINE_STATE.RUNNING || state === PIPELINE_STATE.PENDING || state === PIPELINE_STATE.WAITING_RESOURCES)
         ) undoneAmount++;
       }
-    }
+    });
 
-    //     console.warn(`
-    // undone: ${prevUndoneAmount} -> ${undoneAmount}
-    // success: ${prevSuccessAmount} -> ${successAmount}
-    // failed: ${prevFailedAmount} -> ${failedAmount}
-    // `.trim());
     if (
       prevUndoneAmount < undoneAmount ||
       prevSuccessAmount < successAmount ||
       prevFailedAmount < failedAmount
     ) {
       const LINE_BREAK = '\%0A';
-      const projectName = document.head.querySelector('title').text.split(' · ')?.[1];
+      const projectName = document.head.querySelector('title')?.text.split(' · ')?.[1] || '';
       let message = `CICD狀態更新：${projectName}`;
       if (undoneAmount > 0) message += LINE_BREAK + `還有${undoneAmount}項未完成`;
       else {
@@ -140,27 +132,26 @@
       console.log('sent message: ', message);
       sendNotification(message);
 
-      prevUndoneAmount = failedAmount;
+      prevUndoneAmount = undoneAmount;
       prevSuccessAmount = successAmount;
       prevFailedAmount = failedAmount;
     }
 
-    // 更新狀態記錄
-    pipelines.forEach((pipeline, i) => {
-      statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]');
-      if (pipelineState[getPipeLineId(pipelines[i])] !== judgeState(statusTd)) {
-        pipelineState[getPipeLineId(pipelines[i])] = judgeState(statusTd);
-        pipelineEverUpdate[getPipeLineId(pipelines[i])] = true;
+    pipelines.forEach((pipeline) => {
+      const statusTd = pipeline.querySelector('[data-label=Status] [data-qa-selector=pipeline_commit_status]') as HTMLElement;
+      if (pipelineState[getPipeLineId(pipeline as HTMLElement)] !== judgeState(statusTd)) {
+        pipelineState[getPipeLineId(pipeline as HTMLElement)] = judgeState(statusTd) || '';
+        pipelineEverUpdate[getPipeLineId(pipeline as HTMLElement)] = true;
       }
     });
     console.log('state of pipelines', pipelineState);
   }
 
-  let observer = new MutationObserver((mutations, obs) => {
+  const observer = new MutationObserver((mutations, obs) => {
     main();
   });
 
-  observer.observe(document.querySelector("body"), {
+  observer.observe(document.querySelector("body") as Node, {
     childList: true,
     subtree: true
   });

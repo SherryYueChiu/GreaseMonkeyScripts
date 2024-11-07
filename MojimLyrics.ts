@@ -21,22 +21,22 @@
 (function () {
   'use strict';
 
-  const emptyLyricsStart = 20; // 起始歌詞索引
-  var curLyricIndex = 21; // 記錄當前播放的歌詞索引
+  const emptyLyricsStart: number = 20; // 起始歌詞索引
+  let curLyricIndex: number = 21; // 記錄當前播放的歌詞索引
 
   // Helper function to parse time in format "mm:ss.SS" to milliseconds
-  function parseTime(timeString) {
-    const parts = timeString.split(':');
-    const minutes = parseInt(parts[0], 10);
-    const seconds = parseFloat(parts[1]);
+  function parseTime(timeString: string): number {
+    const parts: string[] = timeString.split(':');
+    const minutes: number = parseInt(parts[0], 10);
+    const seconds: number = parseFloat(parts[1]);
     return (minutes * 60 + seconds) * 1000;
   }
 
   // 設定時間提前量
-  const timeOffset = 1000; // 1秒
+  const timeOffset: number = 1000; // 1秒
 
   // 創建懸浮窗口
-  const lyricsPanel = document.createElement('div');
+  const lyricsPanel: HTMLDivElement = document.createElement('div');
   lyricsPanel.style.position = 'fixed';
   lyricsPanel.style.left = '1rem';
   lyricsPanel.style.top = '1rem';
@@ -51,7 +51,7 @@
   document.body.appendChild(lyricsPanel);
 
   // 創建懸浮按鈕
-  const toggleButton = document.createElement('button');
+  const toggleButton: HTMLButtonElement = document.createElement('button');
   toggleButton.textContent = 'KTV';
   toggleButton.style.position = 'fixed';
   toggleButton.style.bottom = '5%';
@@ -65,7 +65,7 @@
   document.body.appendChild(toggleButton);
 
   // 添加最小化按鈕
-  const minimizeButton = document.createElement('button');
+  const minimizeButton: HTMLButtonElement = document.createElement('button');
   minimizeButton.textContent = '_';
   minimizeButton.style.position = 'fixed';
   minimizeButton.style.top = '5%';
@@ -84,7 +84,7 @@
   document.body.appendChild(minimizeButton);
 
   // 顯示時間的浮動元素
-  const timeDisplay = document.createElement('div');
+  const timeDisplay: HTMLDivElement = document.createElement('div');
   timeDisplay.style.position = 'fixed';
   timeDisplay.style.top = '5%';
   timeDisplay.style.left = '5%';
@@ -92,10 +92,16 @@
   timeDisplay.style.zIndex = '1100';
   document.body.appendChild(timeDisplay);
 
+  // 歌詞行結構
+  interface LyricLine {
+    time: string;
+    lyric: string;
+  }
+
   // 取得歌詞並初始化
-  const lyrics = getLyrics(); // 假設此函數已定義
-  let currentTime = 0; // 起始時間
-  let intervalId = null; // 記錄interval的ID
+  const lyrics: LyricLine[] = getLyrics(); // 假設此函數已定義
+  let currentTime: number = 0; // 起始時間
+  let intervalId: number | null = null; // 記錄interval的ID
 
   // 定時更新時間和歌詞
   intervalId = setInterval(() => {
@@ -104,7 +110,7 @@
     currentTime += 100; // 每100毫秒更新一次時間
   }, 100);
 
-  function initLyrics() {
+  function initLyrics(): void {
     lyricsPanel.innerHTML = '';
 
     if (lyrics?.length >= 1) {
@@ -115,7 +121,7 @@
     }
 
     lyrics.forEach((line) => {
-      const lyricElement = document.createElement('div');
+      const lyricElement: HTMLDivElement = document.createElement('div');
       lyricElement.textContent = line.lyric;
       lyricElement.style.textAlign = 'center';
       lyricElement.style.cursor = 'pointer';
@@ -128,10 +134,10 @@
       lyricElement.onclick = () => {
         currentTime = parseTime(line.time); // 設定當前時間為點擊歌詞的時間
         timeDisplay.textContent = `${Math.floor(currentTime / 60000).toString().padStart(2, '0')}:${Math.floor((currentTime % 60000) / 1000).toString().padStart(2, '0')}`;
-        highlightLyrics(lyricTime); // 重新顯示歌詞
+        highlightLyrics(currentTime); // 重新顯示歌詞
         // 將點擊的歌詞滾動到正中央
-        const offsetTop = lyricElement.offsetTop;
-        const panelHeight = lyricsPanel.clientHeight;
+        const offsetTop: number = lyricElement.offsetTop;
+        const panelHeight: number = lyricsPanel.clientHeight;
         lyricsPanel.scrollTop = offsetTop - panelHeight / 2 + lyricElement.clientHeight / 2;
       };
 
@@ -140,11 +146,11 @@
   }
 
   // 顯示歌詞
-  function highlightLyrics(selectTime) {
+  function highlightLyrics(selectTime: number): void {
     curLyricIndex = lyrics.findLastIndex((line) => selectTime >= parseTime(line.time) - timeOffset);
     lyrics.forEach((line, index) => {
       // 設置當前播放歌詞放大顯示
-      const lyricElement = lyricsPanel.children[index];
+      const lyricElement = lyricsPanel.children[index] as HTMLDivElement;
       if (curLyricIndex === index) {
         lyricElement.style.fontSize = '1.5rem';
         lyricElement.style.fontWeight = 'bold';
@@ -156,29 +162,12 @@
 
     // 自動滾動到當前播放的歌詞位置
     if (curLyricIndex !== -1) {
-      const currentLyricElement = lyricsPanel.children[curLyricIndex];
-      const offsetTop = currentLyricElement.offsetTop;
-      const panelHeight = lyricsPanel.clientHeight;
+      const currentLyricElement = lyricsPanel.children[curLyricIndex] as HTMLDivElement;
+      const offsetTop: number = currentLyricElement.offsetTop;
+      const panelHeight: number = lyricsPanel.clientHeight;
       lyricsPanel.scrollTop = offsetTop - panelHeight / 2 + currentLyricElement.clientHeight / 2;
     }
   }
-
-  // 監聽滾動事件
-  // lyricsPanel.onscroll = () => {
-  //   const centerElement = document.elementFromPoint(
-  //     lyricsPanel.getBoundingClientRect().left + lyricsPanel.clientWidth / 2,
-  //     lyricsPanel.getBoundingClientRect().top + lyricsPanel.clientHeight / 2
-  //   );
-
-  //   if (centerElement && centerElement.parentElement === lyricsPanel) {
-  //     const centerLyric = lyrics.find(lyric => lyric.lyric === centerElement.textContent);
-  //     if (centerLyric) {
-  //       currentTime = parseTime(centerLyric.time);
-  //       highlightLyrics(currentTime);
-  //       timeDisplay.textContent = `Current Time: ${(currentTime / 1000).toFixed(2)} seconds`;
-  //     }
-  //   }
-  // };
 
   // 恢復窗口的事件綁定
   toggleButton.onclick = () => {
@@ -188,14 +177,14 @@
   };
 
   // 取得歌詞內容的函數
-  function getLyrics() {
-    const lyricsSrc = document.querySelectorAll('table tr')[1]
-      .querySelector('td').innerText
-      .split('\n').filter(_ => _.match(/\[[\d\:\.]+\]/));
-    let lyrics = [];
+  function getLyrics(): LyricLine[] {
+    const lyricsSrc: string[] = Array.from(document.querySelectorAll('table tr')[1]
+      .querySelector('td')!.innerText
+      .split('\n').filter(_ => _.match(/\[[\d\:\.]+\]/)));
+    let lyrics: LyricLine[] = [];
     for (let sentences of lyricsSrc) {
-      const times = [...sentences.matchAll(/\[(\d+\:\d+\.\d+)\]/g)].map(_ => _[1]);
-      const lyric = sentences.replaceAll(/\[\d+\:\d+\.\d+\]/g, '').trim();
+      const times: string[] = Array.from(sentences.matchAll(/\[(\d+\:\d+\.\d+)\]/g)).map(_ => _[1]);
+      const lyric: string = sentences.replaceAll(/\[\d+\:\d+\.\d+\]/g, '').trim();
       for (let time of times) {
         lyrics.push({ time, lyric });
       }

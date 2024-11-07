@@ -1,0 +1,25 @@
+{
+  "name": "greasemonkeyscripts",
+  "version": "1.0.0",
+  "description": "Self-made scripts. Most of them will also public to Grasy fork.\r 瀏覽器腳本",
+  "main": "AwabestScript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npx tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SherryYueChiu/GreaseMonkeyScripts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SherryYueChiu/GreaseMonkeyScripts/issues"
+  },
+  "homepage": "https://github.com/SherryYueChiu/GreaseMonkeyScripts#readme",
+  "devDependencies": {
+    "@types/jquery": "^3.5.32",
+    "@types/tampermonkey": "^5.0.3",
+    "typescript": "^5.6.3"
+  }
+}

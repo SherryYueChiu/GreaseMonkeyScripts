@@ -18,66 +18,67 @@
 // ==/UserScript==
 
 (function () {
-  let crawler = () => {
-    const classBlock = document.querySelectorAll("#no-more-tables>tbody>tr");
+  const crawler = (): void => {
+    const classBlock = document.querySelectorAll<HTMLTableRowElement>("#no-more-tables>tbody>tr");
     const classCnt = classBlock.length;
     let json = '';
 
-    for (i = 0; i < classCnt; i++) {
+    for (let i = 0; i < classCnt; i++) {
       let ccode = '',
         cname = '',
-        croom = [],
-        ctime = [];
+        croom: string[] = [],
+        ctime: string[] = [];
 
       // 選課代碼
-      ccode = classBlock[i].querySelector('[data-title=選課代碼]').textContent.trim();
+      ccode = classBlock[i].querySelector<HTMLElement>('[data-title=選課代碼]')?.textContent?.trim() || '';
 
       // 課程名稱
-      if (classBlock[i].querySelector('[data-title=課程名稱]').innerHTML.includes("strike")) continue;
+      const courseNameElement = classBlock[i].querySelector<HTMLElement>('[data-title=課程名稱]');
+      if (courseNameElement?.innerHTML.includes("strike")) continue;
       else {
-        cname = classBlock[i].querySelector('[data-title=課程名稱]').textContent.trim();
+        cname = courseNameElement?.textContent?.trim() || '';
       }
 
       // 地點
-      let room = classBlock[i].querySelector("[data-title=時間地點]").textContent
-        .replace('無資料', '')
+      const roomText = classBlock[i].querySelector<HTMLElement>("[data-title=時間地點]")?.textContent
+        ?.replace('無資料', '')
         .trim()
         .match(/\[([^\[\]]*)\]/g);
-      if (!!room) {
+      if (roomText) {
         // 去除[ ]
-        croom = room.map(str => str.slice(1, -1));
+        croom = roomText.map(str => str.slice(1, -1));
       } else {
-        console.warn(`${ccode}地點格式異常 ${room}`);
+        console.warn(`${ccode}地點格式異常 ${roomText}`);
       }
 
       // 時間
-      let timeRaw = classBlock[i].querySelector("[data-title=時間地點]").textContent
-        .replace('無資料', '')
-        .trim();
+      let timeRaw = classBlock[i].querySelector<HTMLElement>("[data-title=時間地點]")?.textContent
+        ?.replace('無資料', '')
+        .trim() || '';
       // 從原始資料去除地點資訊
-      room?.forEach(r => {
+      roomText?.forEach(r => {
         timeRaw = timeRaw.replace(r, '');
       });
       timeRaw = timeRaw.replaceAll('星期', '');
       ctime = timeRaw.split(/[\s,\/]/);
 
       if (!ctime) {
-        console.warn('時間格式異常', time);
+        console.warn('時間格式異常', ctime);
       }
       // 時間目標格式： ["三", "6", "7", "五", "6", "7"]
 
       json += `{
           "code": "${ccode || ''}",
           "name": "${cname || ''}",
-          "room": ["${croom.join("','") || ''}"],
-          "time": ["${ctime.join("','") || ''}"]
+          "room": ["${croom.join("\",\"") || ''}"],
+          "time": ["${ctime.join("\",\"") || ''}"]
   },`;
     }
     console.log(json);
   }
 
-  let observer = new MutationObserver((mutations, obs) => {
-    if(document.querySelector("#no-more-tables>tbody>tr")){
+  const observer = new MutationObserver((mutations, obs) => {
+    if (document.querySelector("#no-more-tables>tbody>tr")) {
       crawler();
       observer.disconnect();
     }

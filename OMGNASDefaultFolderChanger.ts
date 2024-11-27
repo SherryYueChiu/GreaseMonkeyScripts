@@ -2,13 +2,13 @@
 // @name:zh-tw      OMG NAS 自動點開常用資料夾
 // @name            OMG NAS Auto open default folder
 // @namespace       com.sherryyue.omgnasdefaultfolderchanger
-// @version         0.3
+// @version         0.4
 // @description:zh-tw   開啟NAS後自動點開對內共用區
 // @description         Automatically open the folder "對內共用區" after opening the NAS
 // @author          SherryYue
 // @copyright       SherryYue
 // @license         MIT
-// @match           *://schat.wpkgg.com:5001/*
+// @match           *://nas.wpkgg.com:5001/*
 // @run-at          document-end
 // @contributionURL https://sherryyuechiu.github.io/card
 // @supportURL      sherryyue.c@protonmail.com

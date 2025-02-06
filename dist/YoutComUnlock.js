@@ -18,23 +18,21 @@
 // ==/UserScript==
 (function () {
     'use strict';
-
     let selectedQuality = '1080';
-
-    $("#quality").on("change",function(){
+    $("#quality").on("change", function () {
         selectedQuality = $(this).val();
     });
-        
     var breakRestriction = () => {
-        $("#upgradeModal").modal("hide")
+        const upgradeModal = $("#upgradeModal");
+        upgradeModal.modal("hide");
         $("#quality").val(selectedQuality);
-    }
-
+    };
     let observer = new MutationObserver(() => {
         const upgradeModal = $("#upgradeModal");
-        if (upgradeModal && upgradeModal.has(".show")) breakRestriction();
+        upgradeModal.modal("hide");
+        if (upgradeModal && upgradeModal.has(".show"))
+            breakRestriction();
     });
-
     observer.observe(document.body, {
         childList: true,
         subtree: true

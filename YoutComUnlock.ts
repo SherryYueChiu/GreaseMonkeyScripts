@@ -22,16 +22,18 @@
   let selectedQuality = '1080';
 
   $("#quality").on("change",function(){
-      selectedQuality = $(this).val();
+      selectedQuality = $(this).val() as string;
   });
       
   var breakRestriction = () => {
-      $("#upgradeModal").modal("hide")
+    const upgradeModal = $("#upgradeModal") as any;
+    upgradeModal.modal("hide");
       $("#quality").val(selectedQuality);
   }
 
   let observer = new MutationObserver(() => {
-      const upgradeModal = $("#upgradeModal");
+    const upgradeModal = $("#upgradeModal") as any;
+    upgradeModal.modal("hide");
       if (upgradeModal && upgradeModal.has(".show")) breakRestriction();
   });
 

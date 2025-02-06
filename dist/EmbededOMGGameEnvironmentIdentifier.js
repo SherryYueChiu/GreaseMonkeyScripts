@@ -2,7 +2,7 @@
 // @name:zh-tw      內嵌OMG遊戲環境識別
 // @name            Embeded OMG Game Environment Identifier
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.3
+// @version         0.5
 // @description:zh-tw OMG遊戲識別平台內嵌環境
 // @description       Identify the embeded OMG game environment
 // @author          SherryYue
@@ -10,6 +10,7 @@
 // @license         MIT
 // @match           *://*.ssgaka.com/*
 // @include         *://7sz*.com/*
+// @include         *://*.7sz*.com/*
 // @exclude         *://*/history/*
 // @exclude         *://*/history2/*
 // @exclude         *://*/review/*
@@ -58,6 +59,8 @@
             case '7sz1.com':
                 return 'PROD';
             case '7sz2.com':
+                return 'PROD';
+            case 'rt2.7sz6681.com':
                 return 'PROD';
             default:
                 return `未知(${urlHost})`;

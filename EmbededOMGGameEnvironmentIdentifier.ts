@@ -2,7 +2,7 @@
 // @name:zh-tw      內嵌OMG遊戲環境識別
 // @name            Embeded OMG Game Environment Identifier
 // @namespace       com.sherryyue.lulagitlabciloginfo
-// @version         0.3
+// @version         0.5
 // @description:zh-tw OMG遊戲識別平台內嵌環境
 // @description       Identify the embeded OMG game environment
 // @author          SherryYue
@@ -10,6 +10,7 @@
 // @license         MIT
 // @match           *://*.ssgaka.com/*
 // @include         *://7sz*.com/*
+// @include         *://*.7sz*.com/*
 // @exclude         *://*/history/*
 // @exclude         *://*/history2/*
 // @exclude         *://*/review/*
@@ -24,7 +25,7 @@
 (function () {
 
   // 動態載入 CSS 的函式
-  function loadCSS(url:string) {
+  function loadCSS(url: string) {
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
@@ -34,7 +35,7 @@
   loadCSS('https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css');
 
   // 顯示 toast 的函式
-  function showToast(message:string) {
+  function showToast(message: string) {
     // @ts-ignore
     Toastify({
       text: message,
@@ -45,7 +46,7 @@
     }).showToast();
   }
 
-  function getEnvNameByUrlHost(urlHost:string) {
+  function getEnvNameByUrlHost(urlHost: string) {
     switch (urlHost) {
       case 'sm-dev.ssgaka.com':
         return 'DEV';
@@ -62,6 +63,8 @@
       case '7sz1.com':
         return 'PROD';
       case '7sz2.com':
+        return 'PROD';
+      case 'rt2.7sz6681.com':
         return 'PROD';
       default:
         return `未知(${urlHost})`;

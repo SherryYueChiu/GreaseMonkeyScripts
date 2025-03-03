@@ -2,7 +2,7 @@
 // @name:zh-tw      OMG遊戲GA視覺驗證工具
 // @name            OMG Game GA Visual Verifier
 // @namespace       com.sherryyue.omggamespeedcontroller
-// @version         0.6
+// @version         0.7
 // @description:zh-tw       在畫面上toast出剛被記錄的 dataLayer 事件，方便驗證 GA 的事件追蹤
 // @description             Toast the latest dataLayer event on the screen for verifying GA event tracking
 // @author          SherryYue
@@ -82,24 +82,27 @@
         return formattedString;
     }
 
+
     function checkDataLayer() {
         // @ts-ignore
         if (window.dataLayer) {
             // @ts-ignore
             let currentLength = window.dataLayer.length;
             if (currentLength > previousLength) {
-                // 新事件被加入
+                // 處理所有新增的事件
                 // @ts-ignore
-                let newEvent = window.dataLayer[window.dataLayer.length - 1];
-                if (newEvent && newEvent.event) {
-                    const filteredEvent: any = {};
-                    for (const key in newEvent) {
-                        if (!key.startsWith('gtm.') && key !== 'gameId') {
-                            filteredEvent[key] = newEvent[key];
+                for (let i = previousLength; i < currentLength; i++) {
+                    // @ts-ignore
+                    let newEvent = window.dataLayer[i];
+                    if (newEvent && newEvent.event) {
+                        const filteredEvent: any = {};
+                        for (const key in newEvent) {
+                            if (!key.startsWith('gtm.') && key !== 'gameId') {
+                                filteredEvent[key] = newEvent[key];
+                            }
                         }
+                        showToast(formatJsonObject(filteredEvent));
                     }
-
-                    showToast(formatJsonObject(filteredEvent));
                 }
             } else if (currentLength < previousLength) {
                 showToast('dataLayer被重置了');

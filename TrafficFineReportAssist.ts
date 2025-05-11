@@ -2,7 +2,7 @@
 // @name:zh-tw      臺灣交通違規檢舉自動輸入助手
 // @name            Taiwan Traffic Violation Auto-Filler
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         1.0
+// @version         1.1
 // @description:zh-tw     此腳本能自動填寫臺灣各交通違規檢舉網站上的檢舉人個資。下載後，只需在腳本內的 profile 部分填齊資料，每次訪問網站時，它都會自動幫你填入個資。
 // @description     This script automatically fills in the reporter's personal information on various traffic violation reporting websites in Taiwan. After downloading, simply complete the data in the profile section of the script, and it will auto-fill your information on each website you visit.
 // @run-at document-end
@@ -19,13 +19,13 @@
 // @match           *://tra.hccp.gov.tw/*
 // @match           *://trv.mpb.gov.tw/*
 // @match           *://suggest.police.taichung.gov.tw/*
-// @match           *://jiaowei.ncpb.gov.tw/sc11/*
+// @match           *://jiaowei.ncpd.gov.tw/sc11/*
 // @match           *://traffic.chpb.gov.tw/*
 // @match           *://trv.ylhpb.gov.tw/*
 // @match           *://tptv.klg.gov.tw/*
 // @match           *://www.cypd.gov.tw/*
 // @match           *://www.ccpb.gov.tw/*
-// @match           *://www.tnpd.gov.tw/*
+// @match           *://tr.tnpd.gov.tw/*
 // @match           *://trafficmailbox.ptpolice.gov.tw/*
 // @match           *://ppl.report.ilcpb.gov.tw/*
 // @match           *://hlpb.twgov.mobi/*
@@ -56,10 +56,167 @@
     mail: string;
   }
 
+  interface CityConfig {
+    host: string;
+    handler: () => void;
+    violation?: {
+      select: string;
+      input: string;
+    };
+  }
+
   interface CityHandler {
     host: string;
     handler: () => void;
   }
+
+  interface ViolationField {
+    select: string;
+    input: string;
+  }
+
+  const CITY_CONFIG: { [key: string]: CityConfig } = {
+    GUO_DAO: {
+      host: 'wos.hpb.gov.tw',
+      handler: guoDao,
+      violation: {
+        select: '#ViolativeCategoryLevel1',
+        input: '#ViolationContent'
+      }
+    },
+    GONG_LU: {
+      host: 'www.thb.gov.tw',
+      handler: gongluZongJu
+    },
+    WU_ZE: {
+      host: 'polcar.moenv.gov.tw',
+      handler: wuZeChe
+    },
+    JI_LONG: {
+      host: 'tptv.klg.gov.tw',
+      handler: jiLong,
+      violation: {
+        select: '#IllegalContentList',
+        input: '#IllegalContent'
+      }
+    },
+    XIN_BEI: {
+      host: 'tvrs.ntpd.gov.tw',
+      handler: xinBei,
+      violation: {
+        select: '#eventsData_vio_content_code',
+        input: '#eventsData_vio_content_memo'
+      }
+    },
+    TAI_BEI: {
+      host: 'prsweb.tcpd.gov.tw',
+      handler: taiBei,
+      violation: {
+        select: '#input-156',
+        input: '#sRuldec'
+      }
+    },
+    TAO_YUAN: {
+      host: 'tvrweb.typd.gov.tw:3444',
+      handler: taoYuan
+    },
+    XIN_ZHU_XIAN: {
+      host: 'traffic.hchpb.gov.tw',
+      handler: xinZhuXian
+    },
+    XIN_ZHU_SHI: {
+      host: 'tra.hccp.gov.tw',
+      handler: xinZhuShi
+    },
+    MIAO_LI: {
+      host: 'trv.mpb.gov.tw',
+      handler: miaoLi,
+      violation: {
+        select: '#ViolationId',
+        input: '#ViolationRemark'
+      }
+    },
+    TAI_ZHONG: {
+      host: 'suggest.police.taichung.gov.tw',
+      handler: taichung,
+      violation: {
+        select: '#qclass',
+        input: '#detailcontent'
+      }
+    },
+    NAN_TOU: {
+      host: 'jiaowei.ncpd.gov.tw',
+      handler: nanTou,
+      violation: {
+        select: '#rlid',
+        input: '#mcarblack'
+      }
+    },
+    ZHANG_HUA: {
+      host: 'traffic.chpb.gov.tw',
+      handler: zhanghua,
+      violation: {
+        select: '',
+        input: '#ViolationDescription'
+      }
+    },
+    YUN_LIN: {
+      host: 'trv.ylhpb.gov.tw',
+      handler: yunLin,
+      violation: {
+        select: '#ViolationId',
+        input: '#ViolationRemark'
+      }
+    },
+    JIA_YI_XIAN: {
+      host: 'www.cypd.gov.tw',
+      handler: jiaYiXian,
+      violation: {
+        select: '#TrafficCategoryId',
+        input: '#Memo'
+      }
+    },
+    JIA_YI_SHI: {
+      host: 'www.ccpb.gov.tw',
+      handler: jiaYiShi
+    },
+    TAI_NAN: {
+      host: 'tr.tnpd.gov.tw',
+      handler: taiNan
+    },
+    PING_DONG: {
+      host: 'trafficmailbox.ptpolice.gov.tw',
+      handler: pingDong,
+      violation: {
+        select: '#qclass',
+        input: '#detailcontent'
+      }
+    },
+    YI_LAN: {
+      host: 'ppl.report.ilcpb.gov.tw',
+      handler: yiLan,
+      violation: {
+        select: '#select2-legislation44-container',
+        input: '#content22'
+      }
+    },
+    HUA_LIAN: {
+      host: 'hlpb.twgov.mobi',
+      handler: huaLian,
+      violation: {
+        select: '',
+        input: '#20221205203006'
+      }
+    },
+    TAI_DONG: {
+      host: 'www.ttcpb.gov.tw',
+      handler: taiDong,
+      violation: {
+        select: '#subject',
+        input: '#content1'
+      }
+    }
+  } as const;
 
   let profile: Profile = {
     fullName: localStorage.getItem('profile_fullName') || '',
@@ -70,35 +227,69 @@
     mail: localStorage.getItem('profile_mail') || '',
   };
 
-  const cityHandlers: CityHandler[] = [
-    { host: 'wos.hpb.gov.tw', handler: guoDao },
-    { host: 'www.thb.gov.tw', handler: gongluZongJu },
-    { host: 'polcar.moenv.gov.tw', handler: wuZeChe },
-    { host: 'tptv.klg.gov.tw', handler: jiLong },
-    { host: 'tvrs.ntpd.gov.tw', handler: xinBei },
-    { host: 'prsweb.tcpd.gov.tw', handler: taiBei },
-    { host: 'tvrweb.typd.gov.tw:3444', handler: taoYuan },
-    { host: 'traffic.hchpb.gov.tw', handler: xinZhuXian },
-    { host: 'tra.hccp.gov.tw', handler: xinZhuShi },
-    { host: 'trv.mpb.gov.tw', handler: miaoLi },
-    { host: 'suggest.police.taichung.gov.tw', handler: taichung },
-    { host: 'jiaowei.ncpb.gov.tw', handler: nanTou },
-    { host: 'traffic.chpb.gov.tw', handler: zhanghua },
-    { host: 'trv.ylhpb.gov.tw', handler: yunLin },
-    { host: 'www.cypd.gov.tw', handler: jiaYiXian },
-    { host: 'www.ccpb.gov.tw', handler: jiaYiShi },
-    { host: 'www.tnpd.gov.tw', handler: taiNan },
-    { host: 'trafficmailbox.ptpolice.gov.tw', handler: pingDong },
-    { host: 'ppl.report.ilcpb.gov.tw', handler: yiLan },
-    { host: 'hlpb.twgov.mobi', handler: huaLian },
-    { host: 'www.ttcpb.gov.tw', handler: taiDong },
-  ];
+  function setupViolationHandlers() {
+    const currentHost = location.host;
+    const cityConfig = Object.values(CITY_CONFIG).find(city => city.host === currentHost);
+    
+    if (cityConfig?.violation) {
+      let input: HTMLInputElement | HTMLTextAreaElement | null = null;
+      
+      // 特殊處理花蓮的備註欄位
+      if (currentHost === 'hlpb.twgov.mobi') {
+        input = document.getElementById('20221205203006') as HTMLInputElement | HTMLTextAreaElement;
+      } else {
+        input = document.querySelector(cityConfig.violation.input) as HTMLInputElement | HTMLTextAreaElement;
+      }
+      
+      if (input) {
+        // 如果有下拉選單且選擇器不為空，則設置事件監聽
+        if (cityConfig.violation.select) {
+          const select = document.querySelector(cityConfig.violation.select) as HTMLSelectElement;
+          if (select) {
+            // 監聽選擇變更
+            select.addEventListener('change', () => {
+              if (currentHost === 'tvrs.ntpd.gov.tw' || 
+                  currentHost === 'trv.mpb.gov.tw' || 
+                  currentHost === 'jiaowei.ncpd.gov.tw' ||
+                  currentHost === 'trv.ylhpb.gov.tw' ||
+                  currentHost === 'www.cypd.gov.tw' ||
+                  currentHost === 'ppl.report.ilcpb.gov.tw' ||
+                  currentHost === 'www.ttcpb.gov.tw') {
+                // 新北、苗栗、南投、雲林、嘉義縣、宜蘭和台東特殊處理：使用 option textContent
+                let value = '';
+                if (currentHost === 'www.ttcpb.gov.tw') {
+                  // 台東特殊處理：直接獲取選中選項的文字內容
+                  const selectedOption = select.options[select.selectedIndex];
+                  value = selectedOption.textContent || '';
+                } else {
+                  const selectedOption = select.options[select.selectedIndex];
+                  value = selectedOption.textContent || '';
+                }
+                fillField(input, value);
+              } else {
+                // 其他城市處理
+                const value = select.value;
+                fillField(input, value);
+              }
+            });
+          }
+        }
+
+        // 添加右鍵選單
+        input.addEventListener('contextmenu', (event: MouseEvent) => {
+          event.preventDefault();
+          createContextMenu(event.pageX, event.pageY, menuOptions);
+        });
+      }
+    }
+  }
 
   function handleCity() {
     const currentHost = location.host;
-    const handler = cityHandlers.find(h => h.host === currentHost);
-    if (handler) {
-      handler.handler();
+    const cityConfig = Object.values(CITY_CONFIG).find(city => city.host === currentHost);
+    if (cityConfig) {
+      cityConfig.handler();
+      setupViolationHandlers();
     }
   }
 
@@ -120,6 +311,15 @@
     (scrollTarget || window).scrollTo(0, (scrollTarget || document.body).scrollHeight);
   };
 
+  function fillField(field: HTMLInputElement | HTMLTextAreaElement | null, value: string) {
+    if (field) {
+      field.value = value;
+      // 發送輸入事件
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+      field.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+
   async function guoDao() {
     let field: { [key: string]: HTMLInputElement | null } = {};
 
@@ -135,11 +335,11 @@
       field.addr = document.querySelector('input[name="ApplicantAddress"]');
       field.mail = document.querySelector('input[name="ApplicantEMail"]');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -157,10 +357,10 @@
 
         const violationType = document.querySelector('#ContentPlaceHolder1_c_33') as HTMLInputElement;
         if (violationType) violationType.value = '車牌刷白';
-        if (field.mail) field.mail.value = profile.mail;
-        if (field.fullName) field.fullName.value = profile.fullName;
-        if (field.id) field.id.value = profile.id;
-        if (field.tel) field.tel.value = profile.tel;
+        fillField(field.mail, profile.mail);
+        fillField(field.fullName, profile.fullName);
+        fillField(field.id, profile.id);
+        fillField(field.tel, profile.tel);
 
         const verifyCode = localStorage.getItem('verifyCode');
         if (verifyCode && verifyCodeInput) verifyCodeInput.value = verifyCode;
@@ -188,11 +388,11 @@
       field.addr = document.querySelector('input#ctl00_cphBody_tbxAppAdd');
       field.mail = document.querySelector('input#ctl00_cphBody_tbxAppEmail');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -204,8 +404,6 @@
       field.disclaimerRead = document.querySelector('#CheckBox1');
       if (field.disclaimerRead) {
         field.disclaimerRead.click();
-        field.disclaimerRead.click();
-        field.disclaimerRead.checked = true;
       }
       scrollToBottom();
     } else if (urlPathName === '/reportcase/ReportIndex.aspx') {
@@ -215,15 +413,15 @@
       field.addr = document.querySelector('#ReportAddress');
       field.mail = document.querySelector('#ReportEmail');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
-  async function xinBei() {
+  function xinBei() {
     let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
@@ -242,11 +440,11 @@
       field.addr = document.querySelector('#informerData_contact_address');
       field.mail = document.querySelector('#informerData_Email');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -264,11 +462,11 @@
         field.addr = document.querySelector('input[name="sPubadd"]');
         field.mail = document.querySelector('input[name="email"]');
 
-        if (field.fullName) field.fullName.value = profile.fullName;
-        if (field.id) field.id.value = profile.id;
-        if (field.tel) field.tel.value = profile.tel;
-        if (field.addr) field.addr.value = profile.addr;
-        if (field.mail) field.mail.value = profile.mail;
+        fillField(field.fullName, profile.fullName);
+        fillField(field.id, profile.id);
+        fillField(field.tel, profile.tel);
+        fillField(field.addr, profile.addr);
+        fillField(field.mail, profile.mail);
       }
     }, false);
   }
@@ -289,11 +487,11 @@
         field.addr = document.querySelector('input[name="txtAdd"]');
         field.mail = document.querySelector('input[name="txtEmaill"]');
 
-        if (field.fullName) field.fullName.value = profile.fullName;
-        if (field.id) field.id.value = profile.id;
-        if (field.tel) field.tel.value = profile.tel;
-        if (field.addr) field.addr.value = profile.addr;
-        if (field.mail) field.mail.value = profile.mail;
+        fillField(field.fullName, profile.fullName);
+        fillField(field.id, profile.id);
+        fillField(field.tel, profile.tel);
+        fillField(field.addr, profile.addr);
+        fillField(field.mail, profile.mail);
       }
     }, false);
   }
@@ -317,11 +515,11 @@
       field.addr = document.querySelector('#address2');
       field.mail = document.querySelector('#email');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -344,11 +542,11 @@
       field.addr = document.querySelector('#case_contact_address');
       field.mail = document.querySelector('#case_email');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
 
       // @ts-ignore
       waitForKeyElements("[aria-labelledby=select2-case_violated_at_date-container]", () => {
@@ -389,11 +587,11 @@
       field.addr = document.querySelector('#Address');
       field.mail = document.querySelector('#Email');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -430,14 +628,14 @@
       field.dateTime = document.querySelector('#violationdatetime');
       field.detail = document.querySelector('#detailcontent');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
+      fillField(field.fullName, profile.fullName);
       if (profile.gender === GENDER.FEMALE && field.genderFemale) field.genderFemale.click();
       else if (profile.gender === GENDER.MALE && field.genderMale) field.genderMale.click();
       if (field.nation) field.nation.click();
-      if (field.id) field.id.value = profile.id;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.id, profile.id);
+      fillField(field.addr, profile.addr);
+      fillField(field.tel, profile.tel);
+      fillField(field.mail, profile.mail);
       if (field.dateTime) field.dateTime.removeAttribute('readonly');
       if (field.actSelect) {
         field.actSelect.onchange = () => {
@@ -482,21 +680,12 @@
       field.tel = document.querySelector('#mtel');
       field.addr = document.querySelector('#maddr');
       field.mail = document.querySelector('#memail');
-      field.actSelect = document.querySelector('#rlid');
-      field.detail = document.querySelector('#mcarblack');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
-      if (field.actSelect) {
-        field.actSelect.onchange = () => {
-          const option = Array.from(field.actSelect?.querySelectorAll<HTMLElement>(`option[value='${field.actSelect.value}']`));
-          const content = [...option].map(elm => elm.textContent).join('');
-          if (field.detail) field.detail.value = content.replace(/^[\d-、之第條項款]+/gi, '').replace(/\([\d-、之第條項款]+\)$/gi, '');
-        }
-      }
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -515,11 +704,11 @@
       field.date = document.querySelector('#ViolationDate');
       field.time = document.querySelector('#ViolationTime');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
       if (field.date) {
         field.date.setAttribute('type', 'text');
         field.date.setAttribute('placeholder', 'YYYY-mm-dd');
@@ -551,11 +740,11 @@
         field.disclaimerRead.checked = true;
       }
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
       if (field.date) {
         field.date.setAttribute('type', 'text');
         field.date.setAttribute('placeholder', 'YYYY-mm-dd');
@@ -586,11 +775,11 @@
       field.addr = document.querySelector('#ContactAddress');
       field.mail = document.querySelector('#FromMail');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -617,11 +806,11 @@
       field.addr = document.querySelector('#Address');
       field.mail = document.querySelector('#Email');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -653,11 +842,11 @@
         field.disclaimerRead.click();
         field.disclaimerRead.checked = true;
       }
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
       if (field.dateTime) field.dateTime.removeAttribute('readonly');
       if (field.actSelect) {
         field.actSelect.onchange = () => {
@@ -693,11 +882,11 @@
       field.addr = document.querySelector('#address2');
       field.mail = document.querySelector('#email');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -712,11 +901,11 @@
       field.addr = document.querySelector('[name=address]');
       field.mail = document.querySelector('[name=email]');
 
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -735,11 +924,11 @@
 
       if (profile.gender === GENDER.FEMALE && field.genderFemale) field.genderFemale.click();
       else if (profile.gender === GENDER.MALE && field.genderMale) field.genderMale.click();
-      if (field.fullName) field.fullName.value = profile.fullName;
-      if (field.id) field.id.value = profile.id;
-      if (field.tel) field.tel.value = profile.tel;
-      if (field.addr) field.addr.value = profile.addr;
-      if (field.mail) field.mail.value = profile.mail;
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
     }
   }
 
@@ -780,13 +969,15 @@
 
     const submenu = document.createElement('div');
     submenu.id = 'custom-context-submenu';
-    submenu.style.position = 'absolute';
-    submenu.style.left = `${x}px`;
-    submenu.style.top = `${y}px`;
-    submenu.style.backgroundColor = 'white';
-    submenu.style.border = '1px solid black';
-    submenu.style.padding = '10px';
-    submenu.style.zIndex = '1000';
+    submenu.style.cssText = `
+      position: absolute;
+      left: ${x}px;
+      top: ${y}px;
+      background-color: white;
+      border: 1px solid black;
+      padding: 10px;
+      z-index: 1000;
+    `;
 
     options.forEach(option => {
       const item = document.createElement('div');
@@ -794,7 +985,22 @@
       item.style.padding = '5px';
       item.style.cursor = 'pointer';
       item.addEventListener('click', function () {
-        fillTextArea(option);
+        const currentHost = location.host;
+        const cityConfig = Object.values(CITY_CONFIG).find(city => city.host === currentHost);
+        if (cityConfig?.violation) {
+          let input: HTMLInputElement | HTMLTextAreaElement | null = null;
+          
+          // 特殊處理花蓮的備註欄位
+          if (currentHost === 'hlpb.twgov.mobi') {
+            input = document.getElementById('20221205203006') as HTMLInputElement | HTMLTextAreaElement;
+          } else {
+            input = document.querySelector(cityConfig.violation.input) as HTMLInputElement | HTMLTextAreaElement;
+          }
+          
+          if (input) {
+            fillField(input, option);
+          }
+        }
         removeExistingMenu();
       });
       submenu.appendChild(item);
@@ -817,17 +1023,6 @@
       }
     }
   }
-
-  function fillTextArea(text: string) {
-    const textArea = document.querySelector<HTMLTextAreaElement>('#detailcontent');
-    if (textArea) {
-      textArea.value = text;
-    }
-  }
-
-  window.addEventListener('click', function () {
-    removeExistingMenu();
-  });
 
   function createSettingsPanel() {
     const panel = document.createElement('div');

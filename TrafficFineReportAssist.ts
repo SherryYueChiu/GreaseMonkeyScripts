@@ -2,7 +2,7 @@
 // @name:zh-tw      臺灣交通違規檢舉自動輸入助手
 // @name            Taiwan Traffic Violation Auto-Filler
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         1.1
+// @version         1.2
 // @description:zh-tw     此腳本能自動填寫臺灣各交通違規檢舉網站上的檢舉人個資。下載後，只需在腳本內的 profile 部分填齊資料，每次訪問網站時，它都會自動幫你填入個資。
 // @description     This script automatically fills in the reporter's personal information on various traffic violation reporting websites in Taiwan. After downloading, simply complete the data in the profile section of the script, and it will auto-fill your information on each website you visit.
 // @run-at document-end
@@ -16,7 +16,7 @@
 // @match           *://prsweb.tcpd.gov.tw/*
 // @match           *://tvrweb.typd.gov.tw:3444/*
 // @match           *://traffic.hchpb.gov.tw/*
-// @match           *://tra.hccp.gov.tw/*
+// @match           *://tra2.hccp.gov.tw/*
 // @match           *://trv.mpb.gov.tw/*
 // @match           *://suggest.police.taichung.gov.tw/*
 // @match           *://jiaowei.ncpd.gov.tw/sc11/*
@@ -30,6 +30,8 @@
 // @match           *://ppl.report.ilcpb.gov.tw/*
 // @match           *://hlpb.twgov.mobi/*
 // @match           *://www.ttcpb.gov.tw/*
+// @match           *://tr.ccpb.gov.tw/*
+// @match           *://www.phpb.gov.tw/*
 
 // @supportURL      sherryyue.c@protonmail.com
 // @icon            https://sherryyuechiu.github.io/card/images/logo/maskable_icon_x96.png
@@ -86,7 +88,11 @@
     },
     GONG_LU: {
       host: 'www.thb.gov.tw',
-      handler: gongluZongJu
+      handler: gongluZongJu,
+      violation: {
+        select: '',
+        input: '#ContentPlaceHolder1_c_33'
+      }
     },
     WU_ZE: {
       host: 'polcar.moenv.gov.tw',
@@ -125,7 +131,7 @@
       handler: xinZhuXian
     },
     XIN_ZHU_SHI: {
-      host: 'tra.hccp.gov.tw',
+      host: 'tra2.hccp.gov.tw',
       handler: xinZhuShi
     },
     MIAO_LI: {
@@ -177,8 +183,12 @@
       }
     },
     JIA_YI_SHI: {
-      host: 'www.ccpb.gov.tw',
-      handler: jiaYiShi
+      host: 'tr.ccpb.gov.tw',
+      handler: jiaYiShi,
+      violation: {
+        select: '',
+        input: '[data-bind="value:obsData.formData.CF21O_field1,canedit:modifiable"]'
+      }
     },
     TAI_NAN: {
       host: 'tr.tnpd.gov.tw',
@@ -215,6 +225,10 @@
         select: '#subject',
         input: '#content1'
       }
+    },
+    PENG_HU: {
+      host: 'www.phpb.gov.tw',
+      handler: pengHu
     }
   } as const;
 
@@ -230,17 +244,17 @@
   function setupViolationHandlers() {
     const currentHost = location.host;
     const cityConfig = Object.values(CITY_CONFIG).find(city => city.host === currentHost);
-    
+
     if (cityConfig?.violation) {
       let input: HTMLInputElement | HTMLTextAreaElement | null = null;
-      
+
       // 特殊處理花蓮的備註欄位
       if (currentHost === 'hlpb.twgov.mobi') {
         input = document.getElementById('20221205203006') as HTMLInputElement | HTMLTextAreaElement;
       } else {
         input = document.querySelector(cityConfig.violation.input) as HTMLInputElement | HTMLTextAreaElement;
       }
-      
+
       if (input) {
         // 如果有下拉選單且選擇器不為空，則設置事件監聽
         if (cityConfig.violation.select) {
@@ -248,13 +262,13 @@
           if (select) {
             // 監聽選擇變更
             select.addEventListener('change', () => {
-              if (currentHost === 'tvrs.ntpd.gov.tw' || 
-                  currentHost === 'trv.mpb.gov.tw' || 
-                  currentHost === 'jiaowei.ncpd.gov.tw' ||
-                  currentHost === 'trv.ylhpb.gov.tw' ||
-                  currentHost === 'www.cypd.gov.tw' ||
-                  currentHost === 'ppl.report.ilcpb.gov.tw' ||
-                  currentHost === 'www.ttcpb.gov.tw') {
+              if (currentHost === 'tvrs.ntpd.gov.tw' ||
+                currentHost === 'trv.mpb.gov.tw' ||
+                currentHost === 'jiaowei.ncpd.gov.tw' ||
+                currentHost === 'trv.ylhpb.gov.tw' ||
+                currentHost === 'www.cypd.gov.tw' ||
+                currentHost === 'ppl.report.ilcpb.gov.tw' ||
+                currentHost === 'www.ttcpb.gov.tw') {
                 // 新北、苗栗、南投、雲林、嘉義縣、宜蘭和台東特殊處理：使用 option textContent
                 let value = '';
                 if (currentHost === 'www.ttcpb.gov.tw') {
@@ -306,7 +320,10 @@
   const scrollToBottom = async (scrollTarget?: HTMLElement | Window) => {
     // @ts-ignore
     (scrollTarget || window).scrollTo(0, (scrollTarget || document.body).scrollHeight);
-    await sleep(200);
+    await sleep(500);  // 增加等待時間到 500ms
+    // @ts-ignore
+    (scrollTarget || window).scrollTo(0, (scrollTarget || document.body).scrollHeight);
+    await sleep(500);  // 再次等待 500ms
     // @ts-ignore
     (scrollTarget || window).scrollTo(0, (scrollTarget || document.body).scrollHeight);
   };
@@ -328,6 +345,12 @@
       field.disclaimerRead = document.querySelector('#chkAgree');
       await sleep(200);
       if (field.disclaimerRead) field.disclaimerRead.checked = true;
+
+      // 滾動 .info 節點到底部
+      const infoElement = document.querySelector('.info');
+      if (infoElement) {
+        await scrollToBottom(infoElement as HTMLElement);
+      }
     } else if (urlPathName === '/RV/Create') {
       field.fullName = document.querySelector('input[name="ApplicantName"]');
       field.id = document.querySelector('input[name="ApplicantIDNo"]');
@@ -355,8 +378,6 @@
         field.tel = document.querySelector('#ContentPlaceHolder1_c_31');
         const verifyCodeInput = document.querySelector('#ContentPlaceHolder1_emailVerificationCode_txtVerCode') as HTMLInputElement;
 
-        const violationType = document.querySelector('#ContentPlaceHolder1_c_33') as HTMLInputElement;
-        if (violationType) violationType.value = '車牌刷白';
         fillField(field.mail, profile.mail);
         fillField(field.fullName, profile.fullName);
         fillField(field.id, profile.id);
@@ -367,6 +388,15 @@
         verifyCodeInput?.addEventListener('change', () => {
           localStorage.setItem('verifyCode', verifyCodeInput.value);
         });
+
+        // 添加備註欄位的右鍵選單
+        const remarkField = document.querySelector('#ContentPlaceHolder1_c_33') as HTMLTextAreaElement;
+        if (remarkField) {
+          remarkField.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+            createContextMenu(event.pageX, event.pageY, menuOptions);
+          });
+        }
       }
     } catch (err) {
       console.warn(err);
@@ -527,26 +557,31 @@
     let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
-    if (urlPathName === '/hsin/cases/statement') {
-      field.disclaimerRead = document.querySelector('#has_read');
+    if (urlPathName === '/new/') {
+      field.disclaimerRead = document.querySelector('#agree');
       if (field.disclaimerRead) {
         field.disclaimerRead.click();
-        field.disclaimerRead.click();
         field.disclaimerRead.checked = true;
+        scrollToBottom();
       }
-      scrollToBottom();
-    } else if (urlPathName === '/hsin/cases/new') {
+    } else if (urlPathName === '/new/new.php') {
       field.fullName = document.querySelector('#case_name');
       field.id = document.querySelector('#case_id_number');
       field.tel = document.querySelector('#case_phone');
       field.addr = document.querySelector('#case_contact_address');
       field.mail = document.querySelector('#case_email');
+      field.confirmRead = document.querySelector('#case_read_statement');
 
       fillField(field.fullName, profile.fullName);
       fillField(field.id, profile.id);
       fillField(field.tel, profile.tel);
       fillField(field.addr, profile.addr);
       fillField(field.mail, profile.mail);
+
+      if (field.confirmRead) {
+        field.confirmRead.click();
+        field.confirmRead.checked = true;
+      }
 
       // @ts-ignore
       waitForKeyElements("[aria-labelledby=select2-case_violated_at_date-container]", () => {
@@ -760,15 +795,7 @@
     let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
-    if (urlPathName.startsWith('TrafficMailbox/Index')) {
-      field.disclaimerRead = document.querySelector('#checkRead');
-      if (field.disclaimerRead) {
-        field.disclaimerRead.click();
-        field.disclaimerRead.click();
-        field.disclaimerRead.checked = true;
-        scrollToBottom();
-      }
-    } else if (urlPathName.startsWith('/TrafficMailbox/Create')) {
+    if (urlPathName.startsWith('/TrafficMailbox/Create')) {
       field.fullName = document.querySelector('#FromName');
       field.id = document.querySelector('#FromID');
       field.tel = document.querySelector('#ContactPhone');
@@ -780,21 +807,47 @@
       fillField(field.tel, profile.tel);
       fillField(field.addr, profile.addr);
       fillField(field.mail, profile.mail);
+    } else if (urlPathName.startsWith('/TrafficMailbox/')) {
+      field.disclaimerRead = document.querySelector('#checkRead');
+      if (field.disclaimerRead) {
+        field.disclaimerRead.click();
+        field.disclaimerRead.checked = true;
+        scrollToBottom();
+      }
     }
   }
 
   function jiaYiShi() {
-    // TODO
+    let field: { [key: string]: HTMLInputElement | null } = {};
+
+    const urlPathName = location.pathname;
+    if (urlPathName === '/applicationDoc/Index') {
+      field.fullName = document.querySelector('[data-bind="value:obsData.formData.person_name"]');
+      field.tel = document.querySelector('[data-bind="value:obsData.formData.CF21L_field2,canedit:modifiable"]');
+      field.addr = document.querySelector('[data-bind="value:obsData.formData.CF21K_field3,canedit:modifiable"]');
+      field.remark = document.querySelector('[data-bind="value:obsData.formData.CF21O_field1,canedit:modifiable"]');
+
+      fillField(field.fullName, profile.fullName);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+
+      // 添加備註欄位的右鍵選單
+      if (field.remark) {
+        field.remark.addEventListener('contextmenu', function (event) {
+          event.preventDefault();
+          createContextMenu(event.pageX, event.pageY, menuOptions);
+        });
+      }
+    }
   }
 
   function taiNan() {
     let field: { [key: string]: HTMLInputElement | null } = {};
 
     const urlPathName = location.pathname;
-    if (urlPathName.startsWith('TrafficMailbox/Index')) {
+    if (urlPathName.startsWith('/TrafficMailbox/Index/')) {
       field.disclaimerRead = document.querySelector('#checkRead');
       if (field.disclaimerRead) {
-        field.disclaimerRead.click();
         field.disclaimerRead.click();
         field.disclaimerRead.checked = true;
         scrollToBottom();
@@ -932,6 +985,32 @@
     }
   }
 
+  function pengHu() {
+    let field: { [key: string]: HTMLInputElement | null } = {};
+
+    const urlPathName = location.pathname;
+    const urlSearch = location.search;
+    
+    // 免責聲明頁面
+    if (urlSearch === '?id=404') {
+      scrollToBottom();
+    } 
+    // 表單頁面
+    else {
+      field.fullName = document.querySelector('#name');
+      field.id = document.querySelector('#pid');
+      field.tel = document.querySelector('#tel');
+      field.addr = document.querySelector('#address');
+      field.mail = document.querySelector('#email');
+
+      fillField(field.fullName, profile.fullName);
+      fillField(field.id, profile.id);
+      fillField(field.tel, profile.tel);
+      fillField(field.addr, profile.addr);
+      fillField(field.mail, profile.mail);
+    }
+  }
+
   function createContextMenu(x: number, y: number, options: { [key: string]: any }) {
     removeExistingMenu();
 
@@ -979,12 +1058,12 @@
       z-index: 1000;
     `;
 
-    options.forEach(option => {
-      const item = document.createElement('div');
-      item.textContent = option;
-      item.style.padding = '5px';
-      item.style.cursor = 'pointer';
-      item.addEventListener('click', function () {
+    options.forEach(optionText => {
+      const menuItem = document.createElement('div');
+      menuItem.textContent = optionText;
+      menuItem.style.padding = '5px';
+      menuItem.style.cursor = 'pointer';
+      menuItem.addEventListener('click', function () {
         const currentHost = location.host;
         const cityConfig = Object.values(CITY_CONFIG).find(city => city.host === currentHost);
         if (cityConfig?.violation) {
@@ -998,12 +1077,12 @@
           }
           
           if (input) {
-            fillField(input, option);
+            fillField(input, optionText);
           }
         }
         removeExistingMenu();
       });
-      submenu.appendChild(item);
+      submenu.appendChild(menuItem);
     });
 
     document.body.appendChild(submenu);

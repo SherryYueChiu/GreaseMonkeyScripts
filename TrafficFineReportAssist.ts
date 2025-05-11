@@ -2,7 +2,7 @@
 // @name:zh-tw      臺灣交通違規檢舉自動輸入助手
 // @name            Taiwan Traffic Violation Auto-Filler
 // @namespace       com.sherryyue.TrafficFineReportAssist
-// @version         0.18
+// @version         1.0
 // @description:zh-tw     此腳本能自動填寫臺灣各交通違規檢舉網站上的檢舉人個資。下載後，只需在腳本內的 profile 部分填齊資料，每次訪問網站時，它都會自動幫你填入個資。
 // @description     This script automatically fills in the reporter's personal information on various traffic violation reporting websites in Taiwan. After downloading, simply complete the data in the profile section of the script, and it will auto-fill your information on each website you visit.
 // @run-at document-end
@@ -56,14 +56,51 @@
     mail: string;
   }
 
-  const profile: Profile = {
-    fullName: 'XXX',
-    gender: GENDER.FEMALE,
-    id: 'Y123456789',
-    addr: 'XXX市XXX區XXX路XXX號',
-    tel: '0912345678',
-    mail: 'your-email@mail.com',
+  interface CityHandler {
+    host: string;
+    handler: () => void;
+  }
+
+  let profile: Profile = {
+    fullName: localStorage.getItem('profile_fullName') || '',
+    gender: Number(localStorage.getItem('profile_gender')) || GENDER.FEMALE,
+    id: localStorage.getItem('profile_id') || '',
+    addr: localStorage.getItem('profile_addr') || '',
+    tel: localStorage.getItem('profile_tel') || '',
+    mail: localStorage.getItem('profile_mail') || '',
   };
+
+  const cityHandlers: CityHandler[] = [
+    { host: 'wos.hpb.gov.tw', handler: guoDao },
+    { host: 'www.thb.gov.tw', handler: gongluZongJu },
+    { host: 'polcar.moenv.gov.tw', handler: wuZeChe },
+    { host: 'tptv.klg.gov.tw', handler: jiLong },
+    { host: 'tvrs.ntpd.gov.tw', handler: xinBei },
+    { host: 'prsweb.tcpd.gov.tw', handler: taiBei },
+    { host: 'tvrweb.typd.gov.tw:3444', handler: taoYuan },
+    { host: 'traffic.hchpb.gov.tw', handler: xinZhuXian },
+    { host: 'tra.hccp.gov.tw', handler: xinZhuShi },
+    { host: 'trv.mpb.gov.tw', handler: miaoLi },
+    { host: 'suggest.police.taichung.gov.tw', handler: taichung },
+    { host: 'jiaowei.ncpb.gov.tw', handler: nanTou },
+    { host: 'traffic.chpb.gov.tw', handler: zhanghua },
+    { host: 'trv.ylhpb.gov.tw', handler: yunLin },
+    { host: 'www.cypd.gov.tw', handler: jiaYiXian },
+    { host: 'www.ccpb.gov.tw', handler: jiaYiShi },
+    { host: 'www.tnpd.gov.tw', handler: taiNan },
+    { host: 'trafficmailbox.ptpolice.gov.tw', handler: pingDong },
+    { host: 'ppl.report.ilcpb.gov.tw', handler: yiLan },
+    { host: 'hlpb.twgov.mobi', handler: huaLian },
+    { host: 'www.ttcpb.gov.tw', handler: taiDong },
+  ];
+
+  function handleCity() {
+    const currentHost = location.host;
+    const handler = cityHandlers.find(h => h.host === currentHost);
+    if (handler) {
+      handler.handler();
+    }
+  }
 
   const menuOptions: { [key: string]: string[] } = {
     '燈光': ['闖紅燈', '轉彎不打燈', '變換車道不打燈', '靠邊停車不打燈', '起步不打燈', '紅燈迴轉', '不依規定使用燈光'],
@@ -705,6 +742,7 @@
       if (field.mail) field.mail.value = profile.mail;
     }
   }
+
   function createContextMenu(x: number, y: number, options: { [key: string]: any }) {
     removeExistingMenu();
 
@@ -791,47 +829,214 @@
     removeExistingMenu();
   });
 
-  if (location.host === 'wos.hpb.gov.tw') {
-    guoDao();
-  } else if (location.host === 'www.thb.gov.tw') {
-    gongluZongJu();
-  } else if (location.host === 'polcar.moenv.gov.tw') {
-    wuZeChe();
-  } else if (location.host === 'tptv.klg.gov.tw') {
-    jiLong();
-  } else if (location.host === 'tvrs.ntpd.gov.tw') {
-    xinBei();
-  } else if (location.host === 'prsweb.tcpd.gov.tw') {
-    taiBei();
-  } else if (location.host === 'tvrweb.typd.gov.tw:3444') {
-    taoYuan();
-  } else if (location.host === 'traffic.hchpb.gov.tw') {
-    xinZhuXian();
-  } else if (location.host === 'tra.hccp.gov.tw') {
-    xinZhuShi();
-  } else if (location.host === 'trv.mpb.gov.tw') {
-    miaoLi();
-  } else if (location.host === 'suggest.police.taichung.gov.tw') {
-    taichung();
-  } else if (location.host === 'jiaowei.ncpb.gov.tw') {
-    nanTou();
-  } else if (location.host === 'traffic.chpb.gov.tw') {
-    zhanghua();
-  } else if (location.host === 'trv.ylhpb.gov.tw') {
-    yunLin();
-  } else if (location.host === 'www.cypd.gov.tw') {
-    jiaYiXian();
-  } else if (location.host === 'www.ccpb.gov.tw') {
-    jiaYiShi();
-  } else if (location.host === 'www.tnpd.gov.tw') {
-    taiNan();
-  } else if (location.host === 'trafficmailbox.ptpolice.gov.tw') {
-    pingDong();
-  } else if (location.host === 'ppl.report.ilcpb.gov.tw') {
-    yiLan();
-  } else if (location.host === 'hlpb.twgov.mobi') {
-    huaLian();
-  } else if (location.host === 'www.ttcpb.gov.tw') {
-    taiDong();
+  function createSettingsPanel() {
+    const panel = document.createElement('div');
+    panel.id = 'traffic-fine-settings';
+    panel.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+      min-width: 300px;
+    `;
+
+    const title = document.createElement('h3');
+    title.textContent = '交通違規檢舉設定';
+    title.style.cssText = `
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 16px;
+    `;
+    panel.appendChild(title);
+
+    const form = document.createElement('form');
+    form.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    `;
+
+    const fields: { key: keyof Profile; label: string; type: string }[] = [
+      { key: 'fullName', label: '姓名', type: 'text' },
+      { key: 'id', label: '身分證/居留證號', type: 'text' },
+      { key: 'addr', label: '地址', type: 'text' },
+      { key: 'tel', label: '電話', type: 'tel' },
+      { key: 'mail', label: '電子郵件', type: 'email' },
+    ];
+
+    fields.forEach(field => {
+      const container = document.createElement('div');
+      container.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      `;
+
+      const label = document.createElement('label');
+      label.textContent = field.label;
+      label.style.cssText = `
+        font-size: 14px;
+        color: #666;
+      `;
+
+      const input = document.createElement('input');
+      input.type = field.type;
+      input.value = profile[field.key as keyof Profile] as string;
+      input.style.cssText = `
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      `;
+
+      input.addEventListener('change', (e) => {
+        const target = e.target as HTMLInputElement;
+        const key = field.key as keyof Profile;
+        (profile[key] as string) = target.value;
+        localStorage.setItem(`profile_${field.key}`, target.value);
+      });
+
+      container.appendChild(label);
+      container.appendChild(input);
+      form.appendChild(container);
+    });
+
+    // 性別選擇
+    const genderContainer = document.createElement('div');
+    genderContainer.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    `;
+
+    const genderLabel = document.createElement('label');
+    genderLabel.textContent = '性別';
+    genderLabel.style.cssText = `
+      font-size: 14px;
+      color: #666;
+    `;
+
+    const genderSelect = document.createElement('select');
+    genderSelect.style.cssText = `
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    `;
+
+    const maleOption = document.createElement('option');
+    maleOption.value = String(GENDER.MALE);
+    maleOption.textContent = '男';
+    const femaleOption = document.createElement('option');
+    femaleOption.value = String(GENDER.FEMALE);
+    femaleOption.textContent = '女';
+
+    genderSelect.appendChild(maleOption);
+    genderSelect.appendChild(femaleOption);
+    genderSelect.value = String(profile.gender);
+
+    genderSelect.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      profile.gender = Number(target.value);
+      localStorage.setItem('profile_gender', target.value);
+    });
+
+    genderContainer.appendChild(genderLabel);
+    genderContainer.appendChild(genderSelect);
+    form.appendChild(genderContainer);
+
+    // 關閉按鈕
+    const closeButton = document.createElement('button');
+    closeButton.textContent = '關閉';
+    closeButton.style.cssText = `
+      margin-top: 15px;
+      padding: 8px 16px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    `;
+    closeButton.addEventListener('click', () => {
+      panel.remove();
+      handleCity(); // 關閉時觸發自動填入
+    });
+
+    // 拖曳功能
+    let isDragging = false;
+    let currentX: number = 0;
+    let currentY: number = 0;
+    let initialX: number = 0;
+    let initialY: number = 0;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    title.style.cursor = 'move';
+    title.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
+
+    function dragStart(e: MouseEvent) {
+      initialX = e.clientX - xOffset;
+      initialY = e.clientY - yOffset;
+
+      if (e.target === title) {
+        isDragging = true;
+      }
+    }
+
+    function drag(e: MouseEvent) {
+      if (isDragging) {
+        e.preventDefault();
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+
+        xOffset = currentX;
+        yOffset = currentY;
+
+        panel.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      }
+    }
+
+    function dragEnd() {
+      initialX = currentX;
+      initialY = currentY;
+      isDragging = false;
+    }
+
+    panel.appendChild(form);
+    panel.appendChild(closeButton);
+    document.body.appendChild(panel);
   }
+
+  // 添加設定按鈕
+  function createSettingsButton() {
+    const button = document.createElement('button');
+    button.textContent = '設定';
+    button.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 9998;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    `;
+
+    button.addEventListener('click', createSettingsPanel);
+    document.body.appendChild(button);
+  }
+
+  createSettingsButton();
+  handleCity();
 })();
